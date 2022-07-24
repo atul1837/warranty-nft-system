@@ -17,6 +17,8 @@ import AppFooter from "./components/AppFooter";
 import MintNFT from "./components/MintNFT";
 import HomeWrapper from "./components/HomeWrapper";
 
+import "./App.css";
+
 const { chains, provider, webSocketProvider } = configureChains(defaultChains, [
   // alchemyProvider({ alchemyId }),
   alchemyProvider(),

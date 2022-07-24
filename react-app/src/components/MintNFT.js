@@ -119,7 +119,7 @@ const MintNFT = () => {
               getValueFromEvent={normFile}
               noStyle
             >
-              <Upload.Dragger name="files" action="/upload.do">
+              <Upload.Dragger name="files" action="/upload.do" maxCount={1}>
                 <p className="ant-upload-drag-icon">
                   <UploadOutlined />
                 </p>
