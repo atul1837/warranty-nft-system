@@ -1,0 +1,28 @@
+{
+  "name": "warranty-nft-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivaibhavjindal/warranty-nft-system.git"
+  },
+  "author": "Atul Thakur and Vaibhav Jindal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ivaibhavjindal/warranty-nft-system/issues"
+  },
+  "homepage": "https://github.com/ivaibhavjindal/warranty-nft-system#readme",
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.1.0",
+    "ethers": "^5.0.0",
+    "hardhat": "^2.10.1"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.7.1",
+    "dotenv": "^16.0.1"
+  }
+}
