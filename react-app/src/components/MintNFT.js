@@ -1,3 +1,5 @@
+import moment from "moment";
+
 import { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import {
@@ -12,10 +14,13 @@ import {
   Typography,
   Image,
 } from "antd";
-
-import moment from "moment";
 import { create } from "ipfs-http-client";
+import { ethers } from "ethers";
+
 import Loader from "./Loader";
+import contractJSON from "../contracts/warranty.sol/WarrantyCardContract.json";
+
+const CONTRACT_ADDRESS = "0x8Bc9453EBA87969Bf29c9B8832185aA5F734a14C";
 
 const MintNFT = () => {
   const [buffer, setBuffer] = useState("");
@@ -26,6 +31,48 @@ const MintNFT = () => {
   const ipfsClient = create({
     url: "https://ipfs.infura.io:5001/api/v0",
   });
+
+  const mintWarrantyNFT = async (
+    productSerialNumber,
+    warrantyDuration,
+    warrantyTransfers,
+    walletAddress,
+    tokenUri
+  ) => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        const nftContract = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          contractJSON.abi,
+          signer
+        );
+
+        console.log("Initialise payment");
+
+        const nftTxn = await nftContract.mintWarrantyCard(
+          productSerialNumber,
+          warrantyDuration,
+          warrantyTransfers,
+          walletAddress,
+          tokenUri
+        );
+
+        console.log("mining pls wait");
+        await nftTxn.wait();
+
+        console.log("Transaction hash: ", nftTxn.hash);
+      } else {
+        throw new Error("Ethereum object is not present!");
+      }
+    } catch (err) {
+      console.log("Error", err);
+    }
+  };
 
   useEffect(() => {
     try {
@@ -92,7 +139,13 @@ const MintNFT = () => {
       const tokenUri = `ipfs://${result.path}`;
       console.log(tokenUri);
 
-      // call mint nft
+      await mintWarrantyNFT(
+        values.productSerialNumber,
+        values.warrantyDuration,
+        values.warrantyTransfers || 0,
+        values.walletAddress,
+        tokenUri
+      );
     }
 
     setIsLoading(false);
