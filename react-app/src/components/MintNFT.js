@@ -121,17 +121,27 @@ const MintNFT = () => {
     setIsLoading(true);
     // "walletAddress": "0x11",
     const warrantyJSON = {
-      name: values.productName,
-      image: `ipfs://${imageIPFS}`,
-      description: values.productDescription,
       attributes: [
-        { warranty_duration: values.warrantyDuration },
-        { product_serial_number: values.productSerialNumber },
-        { product_price: values.productPrice },
-        { date_of_purchase: moment(values.dateOfPurchase).unix() },
-        { is_transferable: values.isWarrantyTranserable },
-        { number_of_transfers: values.warrantyTransfers || 0 },
+        {
+          trait_type: "warranty_duration",
+          value: values.warrantyDuration
+        },
+        {
+          trait_type: "product_serial_number",
+          value: values.productSerialNumber
+        },
+        {
+          trait_type: "product_price",
+          value: values.values.productPrice
+        },
+        {
+          trait_type: "date_of_purchase",
+          value: moment(values.dateOfPurchase).unix()
+        },
       ],
+      description: values.productDescription,
+      image: `ipfs://${imageIPFS}`,
+      name: values.productName,
     };
 
     const result = await ipfsClient.add(JSON.stringify(warrantyJSON));
