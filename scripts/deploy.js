@@ -1,5 +1,5 @@
 async function main() {
-    const WarrantyCard = await ethers.getContractFactory("WarrantyCardContract")
+    const WarrantyCard = await ethers.getContractFactory("WarrantyFactory")
   
     // Start deployment, returning a promise that resolves to a contract object
     const warrantyCard = await WarrantyCard.deploy()
