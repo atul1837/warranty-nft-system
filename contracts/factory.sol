@@ -6,18 +6,22 @@ import "./warranty.sol";
 
 contract WarrantyFactory {
 
-    mapping(address => WarrantyCardContract) private _deployedContracts;
+    mapping(address => WarrantyCardContract) private deployedContracts;
+    address[] public ownersAddress;
 
     function createNewWarrantyContract(string memory name, string memory symbol) public returns(WarrantyCardContract) {
         WarrantyCardContract wc_contract = new WarrantyCardContract(name, symbol, msg.sender);
-        _deployedContracts[msg.sender] = wc_contract;
+        deployedContracts[msg.sender] = wc_contract;
+        ownersAddress.push(msg.sender);
         return wc_contract;
     }
 
     function getcontractofowner() public view returns(WarrantyCardContract) {
-        return _deployedContracts[msg.sender];
+        return deployedContracts[msg.sender];
     }
 
-    // get all warranty card contract addr
+    function getTotalContracts() public view returns(uint) {
+        return ownersAddress.length;
+    }
 
 }

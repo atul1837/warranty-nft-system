@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "D:\\projects\\grid4.0\\warranty-nft-system\\contracts\\factory.sol": {
-      "lastModificationDate": 1658816360268,
-      "contentHash": "a4f9c1eb74c867e2a3d5189b096e6901",
+      "lastModificationDate": 1658870361028,
+      "contentHash": "702c9342a24602ab1d969f812a569e4e",
       "sourceName": "contracts/factory.sol",
       "solcConfig": {
         "version": "0.8.4",
@@ -39,8 +39,8 @@
       ]
     },
     "D:\\projects\\grid4.0\\warranty-nft-system\\contracts\\warranty.sol": {
-      "lastModificationDate": 1658816214564,
-      "contentHash": "311cc34e9c96cb6d1c6c99b45c4e42f7",
+      "lastModificationDate": 1658870463737,
+      "contentHash": "4b8f859e368bed379afb91050e42894e",
       "sourceName": "contracts/warranty.sol",
       "solcConfig": {
         "version": "0.8.4",
