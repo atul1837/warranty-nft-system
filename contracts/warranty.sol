@@ -42,36 +42,36 @@ contract WarrantyCardContract is ERC721, ERC721Enumerable, ERC721URIStorage, ERC
 
 
     function getWarrantyCardDetails(uint256 tokenId) public view returns(WarrantyCard memory) {
-        address owner = ERC721.ownerOf(tokenId);
-        require(msg.sender == owner, "Sender not owner of token"); // or the person who minted the warranty in first place
+        address _owner = ERC721.ownerOf(tokenId);
+        require(msg.sender == _owner || msg.sender == owner(), "Sender not owner of token"); // or the person who minted the warranty in first place
         return _WarrantyCards[tokenId];
     }
 
 
     function getWarrantyCardProductSerialNo(uint256 tokenId) public view returns(uint) {
-        address owner = ERC721.ownerOf(tokenId);
-        require(msg.sender == owner, "Sender not owner of token");
+        address _owner = ERC721.ownerOf(tokenId);
+        require(msg.sender == _owner || msg.sender == owner(), "Sender not owner of token");
         return _WarrantyCards[tokenId].product_serial_no;
     }
 
 
     function getWarrantyCardIssueDateTime(uint256 tokenId) public view returns(uint) {
-        address owner = ERC721.ownerOf(tokenId);
-        require(msg.sender == owner, "Sender not owner of token");
+        address _owner = ERC721.ownerOf(tokenId);
+        require(msg.sender == _owner || msg.sender == owner(), "Sender not owner of token");
         return _WarrantyCards[tokenId].issue_date_time;
     }
 
 
     function getWarrantyCardWarrantyDuration(uint256 tokenId) public view returns(uint) {
-        address owner = ERC721.ownerOf(tokenId);
-        require(msg.sender == owner, "Sender not owner of token");
+        address _owner = ERC721.ownerOf(tokenId);
+        require(msg.sender == _owner || msg.sender == owner(), "Sender not owner of token");
         return _WarrantyCards[tokenId].warranty_duration;
     }
     
 
     function getWarrantyCardNoOfTransfersAllowed(uint256 tokenId) public view returns(uint) {
-        address owner = ERC721.ownerOf(tokenId);
-        require(msg.sender == owner, "Sender not owner of token");
+        address _owner = ERC721.ownerOf(tokenId);
+        require(msg.sender == _owner || msg.sender == owner(), "Sender not owner of token");
         return _WarrantyCards[tokenId].no_transfers_allowed;
     }
 
