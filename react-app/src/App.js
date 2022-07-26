@@ -11,14 +11,19 @@ import { Layout } from "antd";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+import { create } from "ipfs-http-client";
+import { ethers } from "ethers";
 
 import AppHeader from "./components/AppHeader";
 import AppFooter from "./components/AppFooter";
-import MintNFT from "./components/MintNFT";
 import HomeWrapper from "./components/HomeWrapper";
-import CreateContract from "./components/CreateContract";
+
+import contractJSON from "./contracts/warranty.sol/WarrantyCardContract.json";
+import factoryContractJSON from "./contracts/factory.sol/WarrantyFactory.json";
 
 import "./App.css";
+import { useEffect, useState } from "react";
+import Brands from "./components/Brands";
 
 const { chains, provider, webSocketProvider } = configureChains(defaultChains, [
   // alchemyProvider({ alchemyId }),
@@ -35,20 +40,89 @@ const client = createClient({
 });
 
 function App() {
+  const [contractAddress, setContractAddress] = useState(null);
+  const [hasContract, setHasContract] = useState(false);
+  const [ipfsClient, setIpfsClient] = useState(null);
+  const [factoryContract, setFactoryContract] = useState(null);
+  const [nftContract, setNftContract] = useState(null);
+
+  useEffect(() => {
+    const ipfsClientInstance = create({
+      url: "https://ipfs.infura.io:5001/api/v0",
+    });
+    setIpfsClient(ipfsClientInstance);
+  }, []);
+
+  useEffect(() => {
+    if (window.ethereum) {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        const factoryContractInstance = new ethers.Contract(
+          process.env.REACT_APP_CONTRACT_FACTORY_ADDRESS,
+          factoryContractJSON.abi,
+          signer
+        );
+
+        setFactoryContract(factoryContractInstance);
+      }
+    }
+  }, [window.ethereum]);
+
+  useEffect(() => {
+    const fetchContract = async () => {
+      const contractTxn = await factoryContract.getcontractofowner();
+
+      if (contractTxn !== process.env.REACT_APP_NULL_CONTRACT) {
+        setContractAddress(contractTxn);
+        setHasContract(true);
+      }
+    };
+    if (factoryContract) {
+      fetchContract();
+    }
+  }, [factoryContract]);
+
+  useEffect(() => {
+    if (
+      contractAddress &&
+      contractAddress !== process.env.REACT_APP_NULL_CONTRACT
+    ) {
+      const { ethereum } = window;
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      const nftContractInstance = new ethers.Contract(
+        contractAddress,
+        contractJSON.abi,
+        signer
+      );
+
+      setNftContract(nftContractInstance);
+    }
+  }, [contractAddress]);
+
   return (
     <WagmiConfig client={client}>
       <BrowserRouter>
         <Layout style={{ minHeight: "100vh" }}>
-          <AppHeader />
+          <AppHeader hasContract={hasContract} />
           <Switch>
             <Route exact path="/">
-              <HomeWrapper />
+              <HomeWrapper
+                contractAddress={contractAddress}
+                nftContract={nftContract}
+              />
             </Route>
-            <Route exact path="/mint">
-              <MintNFT />
-            </Route>
-            <Route exact path="/create-contract">
-              <CreateContract />
+            <Route exact path="/brands">
+              <Brands
+                ipfsClient={ipfsClient}
+                hasContract={hasContract}
+                factoryContract={factoryContract}
+                nftContract={nftContract}
+              />
             </Route>
           </Switch>
           <AppFooter />

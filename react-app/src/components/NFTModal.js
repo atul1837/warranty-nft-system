@@ -1,9 +1,6 @@
 import { Image, List, Button, Modal, Typography, Table } from "antd";
 
-const NFTModal = ({ isModalVisible, setIsModalVisible, selectedNFT }) => {
-  console.log(selectedNFT, isModalVisible, setIsModalVisible);
-
-  const nftData = JSON.parse(selectedNFT?.metadata);
+const NFTModal = ({ isModalVisible, setIsModalVisible, nftData }) => {
   const imageIpfsId = nftData?.image.split("//")[1];
   const imageSrc = `https://ipfs.io/ipfs/${imageIpfsId}`;
   return (
