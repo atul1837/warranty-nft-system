@@ -16,9 +16,9 @@ const HeaderButtons = ({ isConnected, connector, disconnect }) => {
         </Button>
       </Link>
 
-      <Link to="/mint">
-        <Button type="ghost" style={{ color: "#fff" }}>
-          Mint NFT
+      <Link to="/brands">
+        <Button type="ghost" style={{ color: "#fff", margin: "1rem" }}>
+          Brands Section
         </Button>
       </Link>
     </div>

@@ -14,23 +14,15 @@ import {
   Typography,
   Image,
 } from "antd";
-import { create } from "ipfs-http-client";
-import { ethers } from "ethers";
 
 import Loader from "./Loader";
-import contractJSON from "../contracts/warranty.sol/WarrantyCardContract.json";
+import showNotification from "../utilities/notifications";
 
-const CONTRACT_ADDRESS = "0x8Bc9453EBA87969Bf29c9B8832185aA5F734a14C";
-
-const MintNFT = () => {
+const MintNFT = ({ ipfsClient, nftContract }) => {
   const [buffer, setBuffer] = useState("");
   const [imageIPFS, setImageIPFS] = useState("");
   const [isTransferable, setIsTransferable] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const ipfsClient = create({
-    url: "https://ipfs.infura.io:5001/api/v0",
-  });
 
   const mintWarrantyNFT = async (
     productSerialNumber,
@@ -40,37 +32,25 @@ const MintNFT = () => {
     tokenUri
   ) => {
     try {
-      const { ethereum } = window;
+      const nftTxn = await nftContract.mintWarrantyCard(
+        productSerialNumber,
+        warrantyDuration,
+        warrantyTransfers,
+        walletAddress,
+        tokenUri
+      );
 
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
+      await nftTxn.wait();
 
-        const nftContract = new ethers.Contract(
-          CONTRACT_ADDRESS,
-          contractJSON.abi,
-          signer
+      if (nftTxn.hash) {
+        showNotification(
+          "NFT Minted Successfully",
+          "success",
+          `Transaction Hash: ${nftTxn.hash}`
         );
-
-        console.log("Initialise payment");
-
-        const nftTxn = await nftContract.mintWarrantyCard(
-          productSerialNumber,
-          warrantyDuration,
-          warrantyTransfers,
-          walletAddress,
-          tokenUri
-        );
-
-        console.log("mining pls wait");
-        await nftTxn.wait();
-
-        console.log("Transaction hash: ", nftTxn.hash);
-      } else {
-        throw new Error("Ethereum object is not present!");
       }
     } catch (err) {
-      console.log("Error", err);
+      showNotification("NFT Mint Failed", "error", err.message);
     }
   };
 
@@ -78,7 +58,6 @@ const MintNFT = () => {
     try {
       const upload = async () => {
         if (ipfsClient && buffer) {
-          console.log("inside buf", buffer);
           const result = await ipfsClient.add(buffer);
 
           if (result && result.path) {
@@ -124,19 +103,19 @@ const MintNFT = () => {
       attributes: [
         {
           trait_type: "warranty_duration",
-          value: values.warrantyDuration
+          value: values.warrantyDuration,
         },
         {
           trait_type: "product_serial_number",
-          value: values.productSerialNumber
+          value: values.productSerialNumber,
         },
         {
           trait_type: "product_price",
-          value: values.productPrice
+          value: values.productPrice,
         },
         {
           trait_type: "date_of_purchase",
-          value: moment(values.dateOfPurchase).unix()
+          value: moment(values.dateOfPurchase).unix(),
         },
       ],
       description: values.productDescription,
@@ -297,7 +276,7 @@ const MintNFT = () => {
             />
           )}
 
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" disabled={!imageIPFS}>
             Generate NFT
           </Button>
         </Form>

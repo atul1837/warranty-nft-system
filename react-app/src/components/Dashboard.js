@@ -1,62 +1,64 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Layout, Typography, Row, Col } from "antd";
 
-import NFTCard from "./NFTCard";
-import NFTModal from "./NFTModal";
+import BrandCard from "./BrandCard";
 
-const API_KEY = "hEa8GnheHPkSwVBrdefHTKO0JiXgSYqLeTW7CKPRm9tziCeStJ46dYyfx32BnKVn";
-
-const CONTRACT_ADDRESS = "0x8Bc9453EBA87969Bf29c9B8832185aA5F734a14C";
-const WALLET_ADDRESS = "0x07e52895813C87E4004Eca26f5ba9cA086E10A25";
-const CHAIN = "goerli";
-const TOKEN_ID_FORMAT = "decimal";
-const BASE_URL = "https://deep-index.moralis.io/api/v2/";
-const config = {
-  headers: {
-    "Content-Type": "application/json",
-    "X-API-Key": API_KEY,
-  },
-};
-
-const Dashboard = () => {
-  const [warrantyNFTs, setWarrantyNFTs] = useState([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedNFT, setSelectedNFT] = useState({});
+const Dashboard = ({ factoryContract }) => {
+  const [contracts, setContracts] = useState([]);
+  const [selectedContract, setSelectedContract] = useState(null);
+  const [totalContracts, setTotalContracts] = useState(0);
 
   useEffect(() => {
-    const url = `${BASE_URL}${WALLET_ADDRESS}/nft/${CONTRACT_ADDRESS}?chain=${CHAIN}&format=${TOKEN_ID_FORMAT}`;
+    const getTokenCount = async () => {
+      const nftTxn = await factoryContract.totalSupply();
 
-    axios
-      .get(url, config)
-      .then((res) => {
-        console.log(res.data);
-        if (res && res.data && res.data.result && res.data.result.length) {
-          setWarrantyNFTs(res.data.result);
-        }
-      })
-      .catch((err) => {
-        console.log("err", err);
-      });
-  }, []);
+      const totalSupply = parseInt(nftTxn._hex, 16);
+      setTotalContracts(totalSupply);
+    };
+
+    if (factoryContract) getTokenCount();
+  }, [factoryContract]);
 
   useEffect(() => {
-    if (!isModalVisible) {
-      setSelectedNFT({});
+    const tokenIds = [];
+    const brands = [];
+    const getTokenId = async (tokenIndex) => {
+      const nftTxn = await factoryContract.tokenByIndex(tokenIndex);
+
+      return nftTxn;
+    };
+
+    const getTokenIds = async () => {
+      for (let i = 0; i < totalContracts; i++) {
+        const tokenId = await getTokenId(i);
+        tokenIds.push(parseInt(tokenId._hex, 16));
+      }
+    };
+
+    const getBrandDetails = async (tokenId) => {
+      const nftTxn = await factoryContract.getContractDetails(tokenId);
+
+      return nftTxn;
+    };
+
+    const fetchContracts = async () => {
+      await getTokenIds();
+      for (const tokenId of tokenIds) {
+        const nftDetails = await getBrandDetails(tokenId);
+
+        brands.push(nftDetails);
+      }
+
+      setContracts([...brands]);
+    };
+
+    if (factoryContract && contracts.length !== totalContracts) {
+      fetchContracts();
     }
-  }, [isModalVisible]);
-
-  const tokens = [1, 2, 3, 4, 5];
+  }, [totalContracts]);
 
   return (
     <Layout.Content>
-      {selectedNFT && selectedNFT.token_id && (
-        <NFTModal
-          selectedNFT={selectedNFT}
-          isModalVisible={isModalVisible}
-          setIsModalVisible={setIsModalVisible}
-        />
-      )}
       <Typography.Title
         style={{
           textAlign: "center",
@@ -65,19 +67,16 @@ const Dashboard = () => {
           fontWeight: "900",
         }}
       >
-        Warranty Card NFTs
+        Brands
       </Typography.Title>
       <Row style={{ margin: "0 1rem" }}>
-        {warrantyNFTs.map((nft) => (
+        {contracts.map((contract) => (
           <Col
-            key={nft.token_id}
+            key={contract.token_id}
             style={{ margin: ".5rem 2rem" }}
-            onClick={() => {
-              setIsModalVisible(true);
-              setSelectedNFT(nft);
-            }}
+            onClick={() => setSelectedContract(contract)}
           >
-            <NFTCard nftData={JSON.parse(nft.metadata)} />
+            <BrandCard brandData={contract} />
           </Col>
         ))}
       </Row>
