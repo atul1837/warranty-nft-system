@@ -13,7 +13,9 @@ contract WarrantyCardContract is ERC721, ERC721Enumerable, ERC721URIStorage, ERC
 
     Counters.Counter private _tokenIdCounter;
 
-    constructor(string memory name, string memory symbol) ERC721(name, symbol) {}
+    constructor(string memory name, string memory symbol, address _owner) ERC721(name, symbol) {
+        transferOwnership(_owner);
+    }
 
     struct WarrantyCard{
         uint product_serial_no; // product serial no

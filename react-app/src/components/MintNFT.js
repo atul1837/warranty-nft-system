@@ -132,7 +132,7 @@ const MintNFT = () => {
         },
         {
           trait_type: "product_price",
-          value: values.values.productPrice
+          value: values.productPrice
         },
         {
           trait_type: "date_of_purchase",

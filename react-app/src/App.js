@@ -16,6 +16,7 @@ import AppHeader from "./components/AppHeader";
 import AppFooter from "./components/AppFooter";
 import MintNFT from "./components/MintNFT";
 import HomeWrapper from "./components/HomeWrapper";
+import CreateContract from "./components/CreateContract";
 
 import "./App.css";
 
@@ -45,6 +46,9 @@ function App() {
             </Route>
             <Route exact path="/mint">
               <MintNFT />
+            </Route>
+            <Route exact path="/create-contract">
+              <CreateContract />
             </Route>
           </Switch>
           <AppFooter />
