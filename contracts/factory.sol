@@ -9,7 +9,7 @@ contract WarrantyFactory {
     mapping(address => WarrantyCardContract) private _deployedContracts;
 
     function createNewWarrantyContract(string memory name, string memory symbol) public returns(WarrantyCardContract) {
-        WarrantyCardContract wc_contract = new WarrantyCardContract(name, symbol);
+        WarrantyCardContract wc_contract = new WarrantyCardContract(name, symbol, msg.sender);
         _deployedContracts[msg.sender] = wc_contract;
         return wc_contract;
     }
