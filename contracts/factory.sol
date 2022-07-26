@@ -18,4 +18,6 @@ contract WarrantyFactory {
         return _deployedContracts[msg.sender];
     }
 
+    // get all warranty card contract addr
+
 }

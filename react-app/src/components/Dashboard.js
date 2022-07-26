@@ -5,10 +5,10 @@ import { Layout, Typography, Row, Col } from "antd";
 import NFTCard from "./NFTCard";
 import NFTModal from "./NFTModal";
 
-const API_KEY = "";
+const API_KEY = "hEa8GnheHPkSwVBrdefHTKO0JiXgSYqLeTW7CKPRm9tziCeStJ46dYyfx32BnKVn";
 
-const CONTRACT_ADDRESS = "0x0b432135f5D34B43DBF0BA48dcD8241781EBfED2";
-const WALLET_ADDRESS = "0x9e6A054D09dA219c9c4F3cefCF4C9640763487b7";
+const CONTRACT_ADDRESS = "0x8Bc9453EBA87969Bf29c9B8832185aA5F734a14C";
+const WALLET_ADDRESS = "0x07e52895813C87E4004Eca26f5ba9cA086E10A25";
 const CHAIN = "goerli";
 const TOKEN_ID_FORMAT = "decimal";
 const BASE_URL = "https://deep-index.moralis.io/api/v2/";
