@@ -81,6 +81,7 @@ const NFTList = ({ nftContract }) => {
   }, [totalNFTs]);
 
   useEffect(() => {
+    console.log("is modal visible", isModalVisible);
     if (!isModalVisible) {
       setSelectedNFT({});
     }
@@ -88,7 +89,7 @@ const NFTList = ({ nftContract }) => {
 
   return (
     <Layout.Content>
-      {selectedNFT && selectedNFT.token_id && (
+      {selectedNFT?.token_id>=0 && (
         <NFTModal
           nftData={selectedNFT}
           isModalVisible={isModalVisible}
@@ -113,6 +114,7 @@ const NFTList = ({ nftContract }) => {
             onClick={() => {
               setIsModalVisible(true);
               setSelectedNFT(nft);
+              console.log("selected nft:", selectedNFT);
             }}
           >
             <NFTCard nftData={nft} />
