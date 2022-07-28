@@ -13,12 +13,14 @@ import {
   Upload,
   Typography,
   Image,
+  Spin,
 } from "antd";
 
 import Loader from "./Loader";
 import showNotification from "../utilities/notifications";
 
 const MintNFT = ({ ipfsClient, nftContract }) => {
+  const [isImageLoading, setIsImageLoading] = useState(false);
   const [buffer, setBuffer] = useState("");
   const [imageIPFS, setImageIPFS] = useState("");
   const [isTransferable, setIsTransferable] = useState(false);
@@ -69,13 +71,16 @@ const MintNFT = ({ ipfsClient, nftContract }) => {
       };
 
       upload();
+      setIsImageLoading(false);
     } catch (err) {
+      setIsImageLoading(false);
       console.log("err", err);
     }
   }, [ipfsClient, buffer]);
 
   const handleImageUpload = (file) => {
     try {
+      setIsImageLoading(true);
       const reader = new window.FileReader();
       reader.readAsArrayBuffer(file);
       reader.onload = (e) => {
@@ -84,6 +89,7 @@ const MintNFT = ({ ipfsClient, nftContract }) => {
 
       return true;
     } catch (err) {
+      setIsImageLoading(false);
       console.log("Err", err);
       return false;
     }
@@ -268,7 +274,7 @@ const MintNFT = ({ ipfsClient, nftContract }) => {
               </Upload.Dragger>
             </Form.Item>
           </Form.Item>
-
+          {isImageLoading && <Spin />}
           {imageIPFS && (
             <Image
               height={200}

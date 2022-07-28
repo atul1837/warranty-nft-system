@@ -5,8 +5,10 @@ import { Layout, Typography, Row, Col } from "antd";
 import NFTCard from "./NFTCard";
 import NFTModal from "./NFTModal";
 import { getTokenUri } from "../services/contracts/warranty";
+import Loader from "./Loader";
 
 const NFTList = ({ nftContract }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [warrantyNFTs, setWarrantyNFTs] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNFT, setSelectedNFT] = useState({});
@@ -20,7 +22,10 @@ const NFTList = ({ nftContract }) => {
       setTotalNFTS(totalSupply);
     };
 
-    if (nftContract) getTokenCount();
+    if (nftContract) {
+      setIsLoading(true);
+      getTokenCount();
+    }
   }, [nftContract]);
 
   useEffect(() => {
@@ -75,6 +80,7 @@ const NFTList = ({ nftContract }) => {
 
     if (nftContract && warrantyNFTs.length !== totalNFTs) {
       fetchTokens();
+      setIsLoading(false);
     }
   }, [totalNFTs]);
 
@@ -84,9 +90,11 @@ const NFTList = ({ nftContract }) => {
     }
   }, [isModalVisible]);
 
+  if (isLoading) return <Loader />;
+
   return (
     <Layout.Content>
-      {selectedNFT?.token_id>=0 && (
+      {selectedNFT?.token_id >= 0 && (
         <NFTModal
           nftData={selectedNFT}
           isModalVisible={isModalVisible}
