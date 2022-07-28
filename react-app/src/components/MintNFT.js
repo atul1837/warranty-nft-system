@@ -55,6 +55,7 @@ const MintNFT = ({ ipfsClient, nftContract }) => {
   };
 
   useEffect(() => {
+    console.log(ipfsClient);
     try {
       const upload = async () => {
         if (ipfsClient && buffer) {
