@@ -17,6 +17,7 @@ import { ethers } from "ethers";
 import AppHeader from "./components/AppHeader";
 import AppFooter from "./components/AppFooter";
 import HomeWrapper from "./components/HomeWrapper";
+import BrandDetails from "./components/BrandDetails";
 
 import contractJSON from "./contracts/warranty.sol/WarrantyCardContract.json";
 import factoryContractJSON from "./contracts/factory.sol/WarrantyFactory.json";
@@ -127,6 +128,9 @@ function App() {
                 factoryContract={factoryContract}
                 nftContract={nftContract}
               />
+            </Route>
+            <Route exact path="/brand/:contract">
+              
             </Route>
           </Switch>
           <AppFooter />
