@@ -94,6 +94,9 @@ function App() {
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = provider.getSigner();
 
+      console.log("nft contract address", contractAddress);
+      console.log("null contract", process.env.REACT_APP_NULL_CONTRACT);
+
       const nftContractInstance = new ethers.Contract(
         contractAddress,
         contractJSON.abi,
@@ -114,6 +117,7 @@ function App() {
               <HomeWrapper
                 contractAddress={contractAddress}
                 nftContract={nftContract}
+                factoryContract={factoryContract}
               />
             </Route>
             <Route exact path="/brands">
