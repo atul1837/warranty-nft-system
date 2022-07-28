@@ -46,6 +46,9 @@ function App() {
   const [ipfsClient, setIpfsClient] = useState(null);
   const [factoryContract, setFactoryContract] = useState(null);
   const [nftContract, setNftContract] = useState(null);
+  const [brandContractAddress, setBrandContractAddress] = useState(null);
+  const [brandContract, setBrandContract] = useState(null);
+  const [signer, setSigner] = useState(null);
 
   useEffect(() => {
     const ipfsClientInstance = create({
@@ -66,11 +69,26 @@ function App() {
           factoryContractJSON.abi,
           signer
         );
-
+        setSigner(signer);
         setFactoryContract(factoryContractInstance);
       }
     }
   }, [window.ethereum]);
+
+  useEffect(() => {
+    if (
+      brandContractAddress &&
+      brandContractAddress !== process.env.REACT_APP_NULL_CONTRACT
+    ) {
+
+      const brandContractInstance = new ethers.Contract(
+        brandContractAddress,
+        contractJSON.abi,
+        signer
+      );
+      setBrandContract(brandContractInstance);
+    }
+  }, [brandContractAddress]);
 
   useEffect(() => {
     const fetchContract = async () => {
@@ -91,12 +109,6 @@ function App() {
       contractAddress &&
       contractAddress !== process.env.REACT_APP_NULL_CONTRACT
     ) {
-      const { ethereum } = window;
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = provider.getSigner();
-
-      console.log("nft contract address", contractAddress);
-      console.log("null contract", process.env.REACT_APP_NULL_CONTRACT);
 
       const nftContractInstance = new ethers.Contract(
         contractAddress,
@@ -130,7 +142,11 @@ function App() {
               />
             </Route>
             <Route exact path="/brand/:contract">
-              
+              <BrandDetails
+                setBrandContractAddress={setBrandContractAddress}
+                brandContract={brandContract}
+                signer={signer}
+              />
             </Route>
           </Switch>
           <AppFooter />

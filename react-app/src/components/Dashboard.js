@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Layout, Typography, Row, Col } from "antd";
+import { Link } from "react-router-dom";
+
 
 import BrandCard from "./BrandCard";
 
@@ -79,9 +81,10 @@ const Dashboard = ({ factoryContract }) => {
           <Col
             key={contract.address}
             style={{ margin: ".5rem 2rem" }}
-            onClick={() => setSelectedContract(contract)}
           >
-            <BrandCard brandData={contract} />
+            <Link to={`/brand/${contract.address}/`}>            
+              <BrandCard brandData={contract} />
+            </Link>
           </Col>
         ))}
       </Row>
