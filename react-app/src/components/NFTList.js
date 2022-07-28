@@ -4,6 +4,7 @@ import { Layout, Typography, Row, Col } from "antd";
 
 import NFTCard from "./NFTCard";
 import NFTModal from "./NFTModal";
+import { getTokenUri } from "../services/contracts/warranty";
 
 const NFTList = ({ nftContract }) => {
   const [warrantyNFTs, setWarrantyNFTs] = useState([]);
@@ -13,7 +14,6 @@ const NFTList = ({ nftContract }) => {
 
   useEffect(() => {
     const getTokenCount = async () => {
-      console.log(nftContract);
       const nftTxn = await nftContract.totalSupply();
 
       const totalSupply = parseInt(nftTxn._hex, 16);
@@ -45,11 +45,10 @@ const NFTList = ({ nftContract }) => {
       return nftTxn;
     };
 
-    const getTokenUri = async (tokenId) => {
-      const nftTxn = await nftContract.tokenURI(tokenId);
-
-      return nftTxn;
-    };
+    // const getTokenUri = async (tokenId) => {
+    //   const nftTxn = await nftContract.tokenURI(tokenId);
+    //   return nftTxn;
+    // };
 
     const fetchTokens = async () => {
       await getTokenIds();
@@ -58,7 +57,7 @@ const NFTList = ({ nftContract }) => {
       for (const tokenId of tokenIds) {
         try {
           const nftDetails = await getNftDetails(tokenId);
-          const tokenURI = await getTokenUri(tokenId);
+          const tokenURI = await getTokenUri(nftContract, tokenId);
           console.log(tokenURI);
 
           const getDataFromTokenUriResponse = await axios.get(
