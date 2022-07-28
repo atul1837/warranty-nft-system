@@ -6,7 +6,7 @@ import "./warranty.sol";
 
 contract WarrantyFactory {
 
-    mapping(address => WarrantyCardContract) private deployedContracts;
+    mapping(address => WarrantyCardContract) public deployedContracts;
     address[] public ownersAddress;
 
     function createNewWarrantyContract(string memory name, string memory symbol) public returns(WarrantyCardContract) {
@@ -22,6 +22,11 @@ contract WarrantyFactory {
 
     function getTotalContracts() public view returns(uint) {
         return ownersAddress.length;
+    }
+
+    function getDeployedContractDetails(address addr) public view returns(WarrantyCardContract, string memory, string memory) {
+        WarrantyCardContract wc_contract = deployedContracts[addr];
+        return (wc_contract, wc_contract.name(), wc_contract.symbol());
     }
 
 }

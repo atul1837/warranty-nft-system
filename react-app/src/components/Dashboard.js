@@ -10,7 +10,7 @@ const Dashboard = ({ factoryContract }) => {
 
   useEffect(() => {
     const getTokenCount = async () => {
-      const nftTxn = await factoryContract.totalSupply();
+      const nftTxn = await factoryContract.getTotalContracts();
 
       const totalSupply = parseInt(nftTxn._hex, 16);
       setTotalContracts(totalSupply);
@@ -20,37 +20,42 @@ const Dashboard = ({ factoryContract }) => {
   }, [factoryContract]);
 
   useEffect(() => {
-    const tokenIds = [];
-    const brands = [];
-    const getTokenId = async (tokenIndex) => {
-      const nftTxn = await factoryContract.tokenByIndex(tokenIndex);
+    const getOwnerAddressByIndex = async (tokenIndex) => {
+      const nftTxn = await factoryContract.ownersAddress(tokenIndex);
 
       return nftTxn;
     };
 
-    const getTokenIds = async () => {
+    const getOwnerAddressesByIndex = async () => {
+      let ownersAddresses = [];
       for (let i = 0; i < totalContracts; i++) {
-        const tokenId = await getTokenId(i);
-        tokenIds.push(parseInt(tokenId._hex, 16));
+        const owners_address = await getOwnerAddressByIndex(i);
+        ownersAddresses.push(owners_address);
       }
+      return ownersAddresses;
     };
 
-    const getBrandDetails = async (tokenId) => {
-      const nftTxn = await factoryContract.getContractDetails(tokenId);
-
-      return nftTxn;
+    const getBrandDetails = async (ownerAddress) => {
+      let contract_detail = await factoryContract.getDeployedContractDetails(ownerAddress);
+      let contract_detail_json = {
+        address: contract_detail[0],
+        name: contract_detail[1],
+        symbol: contract_detail[2]
+      }
+      return contract_detail_json;
     };
 
     const fetchContracts = async () => {
-      await getTokenIds();
-      for (const tokenId of tokenIds) {
-        const nftDetails = await getBrandDetails(tokenId);
+      let ownersAddresses = await getOwnerAddressesByIndex();
+      let brands = []
+      for (let ownerAddress of ownersAddresses) {
+        let brandDetails = await getBrandDetails(ownerAddress);
 
-        brands.push(nftDetails);
+        brands.push(brandDetails);
       }
-
       setContracts([...brands]);
     };
+
 
     if (factoryContract && contracts.length !== totalContracts) {
       fetchContracts();
@@ -72,7 +77,7 @@ const Dashboard = ({ factoryContract }) => {
       <Row style={{ margin: "0 1rem" }}>
         {contracts.map((contract) => (
           <Col
-            key={contract.token_id}
+            key={contract.address}
             style={{ margin: ".5rem 2rem" }}
             onClick={() => setSelectedContract(contract)}
           >

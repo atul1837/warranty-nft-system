@@ -11,10 +11,9 @@ const NFTList = ({ nftContract }) => {
   const [selectedNFT, setSelectedNFT] = useState({});
   const [totalNFTs, setTotalNFTS] = useState(0);
 
-  console.log(totalNFTs, warrantyNFTs);
-
   useEffect(() => {
     const getTokenCount = async () => {
+      console.log(nftContract);
       const nftTxn = await nftContract.totalSupply();
 
       const totalSupply = parseInt(nftTxn._hex, 16);
@@ -81,7 +80,6 @@ const NFTList = ({ nftContract }) => {
   }, [totalNFTs]);
 
   useEffect(() => {
-    console.log("is modal visible", isModalVisible);
     if (!isModalVisible) {
       setSelectedNFT({});
     }
