@@ -44,6 +44,7 @@ const Dashboard = ({ factoryContract }) => {
         address: contract_detail[0],
         name: contract_detail[1],
         symbol: contract_detail[2],
+        image: `https://ipfs.io/ipfs/${contract_detail[3].split("//")[1]}`,
       };
       return contract_detail_json;
     };
