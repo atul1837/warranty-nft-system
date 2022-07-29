@@ -26,9 +26,10 @@ contract WarrantyFactory {
         return ownersAddress.length;
     }
 
-    function getDeployedContractDetails(address addr) public view returns(WarrantyCardContract, string memory, string memory) {
+    function getDeployedContractDetails(address addr) public view returns(WarrantyCardContract, string memory, string memory, string memory) {
         WarrantyCardContract wc_contract = deployedContracts[addr];
-        return (wc_contract, wc_contract.name(), wc_contract.symbol());
+        string memory imageuri = tokenURI[addr];
+        return (wc_contract, wc_contract.name(), wc_contract.symbol(), imageuri);
     }
 
 }

@@ -31,7 +31,7 @@ const Brands = ({ hasContract, factoryContract, nftContract, ipfsClient }) => {
       </Layout>
     </Layout>
   ) : (
-    <MintContract factoryContract={factoryContract} />
+    <MintContract ipfsClient={ipfsClient} factoryContract={factoryContract} />
   );
 };
 
