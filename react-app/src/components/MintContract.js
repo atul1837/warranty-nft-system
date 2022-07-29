@@ -14,6 +14,7 @@ import { UploadOutlined } from "@ant-design/icons";
 
 import Loader from "./Loader";
 import showNotification from "../utilities/notifications";
+import { sendContractMail } from "../services/mailer/contractMail";
 
 const CreateContract = ({ ipfsClient, factoryContract }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +43,7 @@ const CreateContract = ({ ipfsClient, factoryContract }) => {
         "success",
         `Contract Trasnaction Hash: ${contractTxn.hash}`
       );
+      sendContractMail("vaibhav.jindal.2001@gmail.com", contractTxn.hash);
       setImageIPFS(null);
       setIsLoading(false);
     }

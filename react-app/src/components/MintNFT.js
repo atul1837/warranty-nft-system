@@ -18,6 +18,7 @@ import {
 
 import Loader from "./Loader";
 import showNotification from "../utilities/notifications";
+import { sendNftMail } from "../services/mailer/nftMail";
 
 const MintNFT = ({ ipfsClient, nftContract }) => {
   const [isImageLoading, setIsImageLoading] = useState(false);
@@ -50,6 +51,7 @@ const MintNFT = ({ ipfsClient, nftContract }) => {
           "success",
           `Transaction Hash: ${nftTxn.hash}`
         );
+        sendNftMail("vaibhav.jindal.2001@gmail.com", walletAddress, nftTxn.hash);
       }
     } catch (err) {
       showNotification("NFT Mint Failed", "error", err.message);
