@@ -4,13 +4,17 @@ export const getTokenUri = async (contract, tokenId) => {
 };
 
 export const burnNft = async (contract, tokenId) => {
-  const nftTxn = await contract.burn(tokenId);
+  const nftTxn = await contract.burn(parseInt(tokenId._hex, 16), {
+    gasLimit: 5000000,
+  });
 
   return nftTxn;
 };
 
 export const transferNft = async (nftContract, from, to, tokenId) => {
-  const nftTxn = nftContract.transferFrom(from, to, tokenId);
+  const nftTxn = nftContract.transferFrom(from, to, tokenId, {
+    gasLimit: 5000000,
+  });
 
   return nftTxn;
 };

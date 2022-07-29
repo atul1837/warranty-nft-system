@@ -1,12 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Layout, Typography, Row, Col } from "antd";
 import NFTCard from "./NFTCard";
 import NFTModal from "./NFTModal";
 import { getTokenUri } from "../services/contracts/warranty";
 
 const BrandDetails = ({ setBrandContractAddress, brandContract, signer }) => {
+  const location = useLocation();
   let { contract } = useParams();
   const [userAddress, setUserAddress] = useState(null);
   const [warrantyCards, setWarrantyCards] = useState(null);
@@ -46,11 +47,6 @@ const BrandDetails = ({ setBrandContractAddress, brandContract, signer }) => {
 
   useEffect(() => {
     let warrantyCardList = [];
-
-    const getNftDetails = async (tokenId) => {
-      const details = await brandContract?.getWarrantyCardDetails(tokenId);
-      return details;
-    };
 
     const fetchWarrantyCard = async (idx) => {
       const tokenId = await brandContract?.tokenOfOwnerByIndex(
@@ -97,6 +93,7 @@ const BrandDetails = ({ setBrandContractAddress, brandContract, signer }) => {
     <Layout.Content>
       {selectedNFT?.token_id >= 0 && (
         <NFTModal
+          nftContract={brandContract}
           nftData={selectedNFT}
           isModalVisible={isModalVisible}
           setIsModalVisible={setIsModalVisible}
@@ -110,7 +107,11 @@ const BrandDetails = ({ setBrandContractAddress, brandContract, signer }) => {
           fontWeight: "900",
         }}
       >
-        Warranty Card NFTs
+        {`${
+          location.state.contract && location.state.contract.name
+            ? location.state.contract.name
+            : "Warranty Card"
+        } NFTs`}
       </Typography.Title>
       <Row style={{ margin: "0 1rem" }}>
         {console.log("warranty cards", warrantyCards)}

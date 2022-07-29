@@ -57,6 +57,7 @@ const NFTList = ({ nftContract }) => {
       fetchTokens();
       setIsLoading(false);
     }
+    setIsLoading(false);
   }, [totalNFTs]);
 
   useEffect(() => {
@@ -71,7 +72,6 @@ const NFTList = ({ nftContract }) => {
     <Layout.Content>
       {selectedNFT?.token_id >= 0 && (
         <NFTModal
-          nftContract={nftContract}
           nftData={selectedNFT}
           isModalVisible={isModalVisible}
           setIsModalVisible={setIsModalVisible}

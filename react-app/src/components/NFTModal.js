@@ -4,6 +4,9 @@ import { useState } from "react";
 import { burnNft } from "../services/contracts/warranty";
 import BurnNFT from "./BurnNFT";
 import TransferNFT from "./TransferNFT";
+import showNotification from "../utilities/notifications";
+import Loader from "./Loader";
+import moment from "moment";
 
 const NFTModal = ({
   nftContract,
@@ -12,10 +15,45 @@ const NFTModal = ({
   nftData,
 }) => {
   const { address } = useAccount();
+  const [isLoading, setIsLoading] = useState(false);
   const [showTransferForm, setShowTransferForm] = useState(false);
   const [showBurnForm, setShowBurnForm] = useState(false);
   const imageIpfsId = nftData?.image.split("//")[1];
   const imageSrc = `https://ipfs.io/ipfs/${imageIpfsId}`;
+
+  let attributes = [];
+  if (nftData && nftData.attributes && nftData.attributes.length) {
+    attributes = nftData.attributes.map((atr) => ({
+      trait_type: atr.trait_type
+        .split("_")
+        .map((val) => val[0].toUpperCase() + val.substring(1).toLowerCase())
+        .join(" "),
+      value:
+        atr.trait_type === "warranty_duration"
+          ? `${atr.value} days`
+          : atr.trait_type === "date_of_purchase"
+          ? moment.unix(atr.value).format("DD/MM/YYYY")
+          : atr.value,
+    }));
+  }
+
+  const handleBurnNft = () => {
+    setIsLoading(true);
+    burnNft(nftContract, nftData.token_id)
+      .then((res) => res.wait())
+      .then((res) => {
+        console.log(res);
+        showNotification("NFT Burnt Successfully!", "success");
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        showNotification("NFT Burn Failed!", "error", err);
+        console.log(err);
+        setIsLoading(false);
+      });
+  };
+
+  if (isLoading) return <Loader />;
 
   return (
     <Modal
@@ -42,7 +80,7 @@ const NFTModal = ({
         renderItem={(nft) => (
           <List.Item
             key={nft}
-            extra={<Image height={500} alt={nft?.name} src={imageSrc} />}
+            extra={<Image height={400} alt={nft?.name} src={imageSrc} />}
           >
             <List.Item.Meta
               title={
@@ -53,7 +91,7 @@ const NFTModal = ({
               description={nft?.description}
             />
             <Table
-              dataSource={nftData?.attributes}
+              dataSource={attributes}
               columns={[
                 {
                   title: "Trait Type",
@@ -67,32 +105,38 @@ const NFTModal = ({
                 },
               ]}
             />
-            {showTransferForm && (
-              <TransferNFT
-                tokenId={nftData.token_id}
-                walletAddress={address}
-                nftContract={nftContract}
-                setShowTransferForm={setShowTransferForm}
-              />
-            )}
-            {showBurnForm && (
-              <BurnNFT
-                burnNft={() => burnNft(nftContract, nftData.token_id)}
-                setShowBurnForm={setShowBurnForm}
-              />
-            )}
-            {!showBurnForm && !showTransferForm && (
+
+            {nftContract && (
               <>
-                <Button
-                  type="danger"
-                  style={{ marginRight: "1rem" }}
-                  onClick={() => setShowTransferForm(true)}
-                >
-                  Transfer NFT
-                </Button>
-                <Button type="danger" onClick={() => setShowBurnForm(true)}>
-                  Burn NFT
-                </Button>
+                {showTransferForm && (
+                  <TransferNFT
+                    setIsLoading={setIsLoading}
+                    tokenIdHex={nftData.token_id}
+                    walletAddress={address}
+                    nftContract={nftContract}
+                    setShowTransferForm={setShowTransferForm}
+                  />
+                )}
+                {showBurnForm && (
+                  <BurnNFT
+                    setShowBurnForm={setShowBurnForm}
+                    burnNft={handleBurnNft}
+                  />
+                )}
+                {!showBurnForm && !showTransferForm && (
+                  <>
+                    <Button
+                      type="danger"
+                      style={{ marginRight: "1rem" }}
+                      onClick={() => setShowTransferForm(true)}
+                    >
+                      Transfer NFT
+                    </Button>
+                    <Button type="danger" onClick={() => setShowBurnForm(true)}>
+                      Burn NFT
+                    </Button>
+                  </>
+                )}
               </>
             )}
           </List.Item>

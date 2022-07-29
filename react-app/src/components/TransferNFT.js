@@ -1,14 +1,36 @@
 import { Button, Form, Input } from "antd";
 import React, { useState } from "react";
 import { transferNft } from "../services/contracts/warranty";
+import showNotification from "../utilities/notifications";
 
 const TransferNFT = ({
-  tokenId,
+  setIsLoading,
+  tokenIdHex,
   walletAddress,
   nftContract,
   setShowTransferForm,
 }) => {
+  let tokenId = null;
+  console.log(tokenIdHex, parseInt(tokenIdHex._hex, 16));
+  if (tokenIdHex) tokenId = parseInt(tokenIdHex._hex, 16);
   const [toWalletAddress, setToWalletAddress] = useState("");
+
+  const handleTransferNft = () => {
+    setIsLoading(true);
+    transferNft(nftContract, walletAddress, toWalletAddress, tokenId)
+      .then((res) => res.wait())
+      .then((res) => {
+        console.log(res);
+        showNotification("NFT Transferred Successfully!", "success");
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        showNotification("NFT Transfer Failed!", "error", err);
+        console.log(err);
+        setIsLoading(false);
+      });
+  };
+
   return (
     <Form layout="inline" style={{ marginTop: "1rem" }}>
       <Form.Item label="Transfer To Wallet">
@@ -22,9 +44,7 @@ const TransferNFT = ({
         <Button
           type="primary"
           style={{ marginRight: ".5rem" }}
-          onClick={() =>
-            transferNft(nftContract, walletAddress, toWalletAddress, tokenId)
-          }
+          onClick={handleTransferNft}
         >
           Transfer
         </Button>
