@@ -42,7 +42,7 @@ const CreateContract = ({ ipfsClient, factoryContract }) => {
         "success",
         `Contract Trasnaction Hash: ${contractTxn.hash}`
       );
-
+      setImageIPFS(null);
       setIsLoading(false);
     }
   };

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Layout, Typography, Row, Col } from "antd";
 import { Link } from "react-router-dom";
 
-
 import BrandCard from "./BrandCard";
 
 const Dashboard = ({ factoryContract }) => {
@@ -38,18 +37,20 @@ const Dashboard = ({ factoryContract }) => {
     };
 
     const getBrandDetails = async (ownerAddress) => {
-      let contract_detail = await factoryContract.getDeployedContractDetails(ownerAddress);
+      let contract_detail = await factoryContract.getDeployedContractDetails(
+        ownerAddress
+      );
       let contract_detail_json = {
         address: contract_detail[0],
         name: contract_detail[1],
-        symbol: contract_detail[2]
-      }
+        symbol: contract_detail[2],
+      };
       return contract_detail_json;
     };
 
     const fetchContracts = async () => {
       let ownersAddresses = await getOwnerAddressesByIndex();
-      let brands = []
+      let brands = [];
       for (let ownerAddress of ownersAddresses) {
         let brandDetails = await getBrandDetails(ownerAddress);
 
@@ -57,7 +58,6 @@ const Dashboard = ({ factoryContract }) => {
       }
       setContracts([...brands]);
     };
-
 
     if (factoryContract && contracts.length !== totalContracts) {
       fetchContracts();
@@ -78,11 +78,13 @@ const Dashboard = ({ factoryContract }) => {
       </Typography.Title>
       <Row style={{ margin: "0 1rem" }}>
         {contracts.map((contract) => (
-          <Col
-            key={contract.address}
-            style={{ margin: ".5rem 2rem" }}
-          >
-            <Link to={`/brand/${contract.address}/`}>            
+          <Col key={contract.address} style={{ margin: ".5rem 2rem" }}>
+            <Link
+              to={{
+                pathname: `/brand/${contract.address}/`,
+                state: { contract },
+              }}
+            >
               <BrandCard brandData={contract} />
             </Link>
           </Col>
