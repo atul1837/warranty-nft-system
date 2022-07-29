@@ -1,8 +1,22 @@
+import { useAccount } from "wagmi";
 import { Image, List, Button, Modal, Typography, Table } from "antd";
+import { useState } from "react";
+import { burnNft } from "../services/contracts/warranty";
+import BurnNFT from "./BurnNFT";
+import TransferNFT from "./TransferNFT";
 
-const NFTModal = ({ isModalVisible, setIsModalVisible, nftData }) => {
+const NFTModal = ({
+  nftContract,
+  isModalVisible,
+  setIsModalVisible,
+  nftData,
+}) => {
+  const { address } = useAccount();
+  const [showTransferForm, setShowTransferForm] = useState(false);
+  const [showBurnForm, setShowBurnForm] = useState(false);
   const imageIpfsId = nftData?.image.split("//")[1];
   const imageSrc = `https://ipfs.io/ipfs/${imageIpfsId}`;
+
   return (
     <Modal
       closable={false}
@@ -53,6 +67,34 @@ const NFTModal = ({ isModalVisible, setIsModalVisible, nftData }) => {
                 },
               ]}
             />
+            {showTransferForm && (
+              <TransferNFT
+                tokenId={nftData.token_id}
+                walletAddress={address}
+                nftContract={nftContract}
+                setShowTransferForm={setShowTransferForm}
+              />
+            )}
+            {showBurnForm && (
+              <BurnNFT
+                burnNft={() => burnNft(nftContract, nftData.token_id)}
+                setShowBurnForm={setShowBurnForm}
+              />
+            )}
+            {!showBurnForm && !showTransferForm && (
+              <>
+                <Button
+                  type="danger"
+                  style={{ marginRight: "1rem" }}
+                  onClick={() => setShowTransferForm(true)}
+                >
+                  Transfer NFT
+                </Button>
+                <Button type="danger" onClick={() => setShowBurnForm(true)}>
+                  Burn NFT
+                </Button>
+              </>
+            )}
           </List.Item>
         )}
       />
