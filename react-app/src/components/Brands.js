@@ -4,6 +4,7 @@ import { Layout, Menu } from "antd";
 import MintContract from "./MintContract";
 import MintNFT from "./MintNFT";
 import NFTList from "./NFTList";
+import FindNFT from "./FindNFT";
 
 const Brands = ({ hasContract, factoryContract, nftContract, ipfsClient }) => {
   const [selectedKey, setSelectedKey] = useState(true);
@@ -17,7 +18,8 @@ const Brands = ({ hasContract, factoryContract, nftContract, ipfsClient }) => {
           mode="inline"
           items={[
             { key: "1", label: "Mint NFT" },
-            { key: "2", label: "View Minted NFTs" },
+            { key: "2", label: "View Minted Warranty" },
+            { key: "3", label: "Find Warranty Card" }
           ]}
         />
       </Layout.Sider>
@@ -27,6 +29,7 @@ const Brands = ({ hasContract, factoryContract, nftContract, ipfsClient }) => {
             <MintNFT ipfsClient={ipfsClient} nftContract={nftContract} />
           )}
           {selectedKey == "2" && <NFTList nftContract={nftContract} />}
+          {selectedKey == "3" && <FindNFT nftContract={nftContract} />}
         </Layout.Content>
       </Layout>
     </Layout>
