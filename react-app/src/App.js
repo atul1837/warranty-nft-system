@@ -80,7 +80,6 @@ function App() {
       brandContractAddress &&
       brandContractAddress !== process.env.REACT_APP_NULL_CONTRACT
     ) {
-
       const brandContractInstance = new ethers.Contract(
         brandContractAddress,
         contractJSON.abi,
@@ -109,7 +108,6 @@ function App() {
       contractAddress &&
       contractAddress !== process.env.REACT_APP_NULL_CONTRACT
     ) {
-
       const nftContractInstance = new ethers.Contract(
         contractAddress,
         contractJSON.abi,
