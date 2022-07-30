@@ -40,3 +40,9 @@ export const getTotalSupply = async (contract) => {
 
   return parseInt(nftTxn._hex, 16);
 };
+
+export const isWarrantyValid = async (contract, tokenId) => {
+  const nftTxn = await contract.isWarrantyStillApplicable(tokenId);
+
+  return nftTxn;
+} 
