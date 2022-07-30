@@ -1,22 +1,9 @@
 import axios from "axios";
-import {
-  Input,
-  Button,
-  Col,
-  Form,
-  DatePicker,
-  Row,
-  Switch,
-  Upload,
-  Typography,
-  Image,
-  Spin,
-} from "antd";
+import { Input, Button, Col, Form, Row, Typography } from "antd";
 import { useState } from "react";
 import { getTokenUri } from "../services/contracts/warranty";
 import NFTCard from "./NFTCard";
 import NFTModal from "./NFTModal";
-import Loader from "./Loader";
 import showNotification from "../utilities/notifications";
 
 const FindNFT = ({ nftContract }) => {
@@ -54,6 +41,8 @@ const FindNFT = ({ nftContract }) => {
             nftData={selectedNFT}
             isModalVisible={isModalVisible}
             setIsModalVisible={setIsModalVisible}
+            nftContract={nftContract}
+            admin
           />
         )}
         {!warrantyCard ? (

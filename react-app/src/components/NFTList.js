@@ -58,7 +58,7 @@ const NFTList = ({ nftContract }) => {
         setIsLoading(false);
       });
     }
-  }, [totalNFTs]);
+  }, [totalNFTs, nftContract, warrantyNFTs.length]);
 
   useEffect(() => {
     if (!isModalVisible) {
@@ -75,6 +75,8 @@ const NFTList = ({ nftContract }) => {
           nftData={selectedNFT}
           isModalVisible={isModalVisible}
           setIsModalVisible={setIsModalVisible}
+          nftContract={nftContract}
+          admin
         />
       )}
       <Typography.Title

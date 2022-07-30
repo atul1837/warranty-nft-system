@@ -5,9 +5,19 @@ import MintContract from "./MintContract";
 import MintNFT from "./MintNFT";
 import NFTList from "./NFTList";
 import FindNFT from "./FindNFT";
+import Loader from "./Loader";
 
-const Brands = ({ contractAddress, hasContract, factoryContract, nftContract, ipfsClient }) => {
-  const [selectedKey, setSelectedKey] = useState(true);
+const Brands = ({
+  contractAddress,
+  hasContract,
+  factoryContract,
+  nftContract,
+  ipfsClient,
+}) => {
+  const [selectedKey, setSelectedKey] = useState("1");
+  if (hasContract === null) {
+    return <Loader />;
+  }
   return hasContract ? (
     <Layout>
       <Layout.Sider breakpoint="sm" collapsedWidth="0">
@@ -25,11 +35,15 @@ const Brands = ({ contractAddress, hasContract, factoryContract, nftContract, ip
       </Layout.Sider>
       <Layout>
         <Layout.Content>
-          {selectedKey == "1" && (
-            <MintNFT contractAddress={contractAddress} ipfsClient={ipfsClient} nftContract={nftContract} />
+          {selectedKey === "1" && (
+            <MintNFT
+              contractAddress={contractAddress}
+              ipfsClient={ipfsClient}
+              nftContract={nftContract}
+            />
           )}
-          {selectedKey == "2" && <NFTList nftContract={nftContract} />}
-          {selectedKey == "3" && <FindNFT nftContract={nftContract} />}
+          {selectedKey === "2" && <NFTList nftContract={nftContract} />}
+          {selectedKey === "3" && <FindNFT nftContract={nftContract} />}
         </Layout.Content>
       </Layout>
     </Layout>

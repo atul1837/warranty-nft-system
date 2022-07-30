@@ -1,6 +1,6 @@
 import moment from "moment";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import {
   Input,
@@ -22,7 +22,6 @@ import { sendNftMail } from "../services/mailer/nftMail";
 
 const MintNFT = ({ contractAddress, ipfsClient, nftContract }) => {
   const [isImageLoading, setIsImageLoading] = useState(false);
-  const [buffer, setBuffer] = useState("");
   const [imageIPFS, setImageIPFS] = useState("");
   const [isTransferable, setIsTransferable] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -65,13 +64,12 @@ const MintNFT = ({ contractAddress, ipfsClient, nftContract }) => {
   };
 
   const handleImageUpload = (options) => {
-    const { onSuccess, onError, file, action, onProgress } = options;
+    const { onSuccess, onError, file } = options;
     try {
       setIsImageLoading(true);
       const reader = new window.FileReader();
       reader.readAsArrayBuffer(file);
       reader.onload = (e) => {
-        setBuffer(e.target.result);
         let buffer = e.target.result;
         try {
           const upload = async () => {

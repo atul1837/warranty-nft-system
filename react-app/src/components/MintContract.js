@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Row,
   Col,
@@ -19,7 +19,6 @@ import { sendContractMail } from "../services/mailer/contractMail";
 const CreateContract = ({ ipfsClient, factoryContract }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(false);
-  const [buffer, setBuffer] = useState("");
   const [imageIPFS, setImageIPFS] = useState(null);
 
   const mintContract = async (
@@ -55,13 +54,12 @@ const CreateContract = ({ ipfsClient, factoryContract }) => {
   };
 
   const handleImageUpload = (options) => {
-    const { onSuccess, onError, file, action, onProgress } = options;
+    const { onSuccess, onError, file } = options;
     try {
       setIsImageLoading(true);
       const reader = new window.FileReader();
       reader.readAsArrayBuffer(file);
       reader.onload = (e) => {
-        setBuffer(e.target.result);
         let buffer = e.target.result;
         try {
           const upload = async () => {
