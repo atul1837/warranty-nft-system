@@ -133,6 +133,7 @@ function App() {
             </Route>
             <Route exact path="/brands">
               <Brands
+                contractAddress={contractAddress}
                 ipfsClient={ipfsClient}
                 hasContract={hasContract}
                 factoryContract={factoryContract}
