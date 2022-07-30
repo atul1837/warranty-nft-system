@@ -16,24 +16,34 @@ import { useState } from "react";
 import { getTokenUri } from "../services/contracts/warranty";
 import NFTCard from "./NFTCard";
 import NFTModal from "./NFTModal";
+import Loader from "./Loader";
+import showNotification from "../utilities/notifications";
 
 const FindNFT = ({ nftContract }) => {
   const [warrantyCard, setWarrantyCard] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNFT, setSelectedNFT] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const onFinish = async (values) => {
-    const tokenURI = await getTokenUri(nftContract, values.tokenId);
-    console.log(tokenURI);
+    setLoading(true);
+    try {
+      const tokenURI = await getTokenUri(nftContract, values.tokenId);
+      console.log(tokenURI);
 
-    const getDataFromTokenUriResponse = await axios.get(
-      `https://ipfs.io/ipfs/${tokenURI.split("//")[1]}`
-    );
+      const getDataFromTokenUriResponse = await axios.get(
+        `https://ipfs.io/ipfs/${tokenURI.split("//")[1]}`
+      );
 
-    setWarrantyCard({
-      token_id: values.tokenId,
-      ...getDataFromTokenUriResponse.data,
-    });
+      setWarrantyCard({
+        token_id: values.tokenId,
+        ...getDataFromTokenUriResponse.data,
+      });
+      setLoading(false);
+    } catch (err) {
+      showNotification("Invalid Token ID", "error");
+      setLoading(false);
+    }
   };
 
   return (
@@ -81,7 +91,7 @@ const FindNFT = ({ nftContract }) => {
               />
             </Form.Item>
 
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={loading}>
               Get Warranty Card
             </Button>
           </Form>

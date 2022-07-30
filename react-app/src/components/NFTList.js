@@ -54,10 +54,10 @@ const NFTList = ({ nftContract }) => {
     };
 
     if (nftContract && warrantyNFTs.length !== totalNFTs) {
-      fetchTokens();
-      setIsLoading(false);
+      fetchTokens().then((res) => {
+        setIsLoading(false);
+      });
     }
-    setIsLoading(false);
   }, [totalNFTs]);
 
   useEffect(() => {
