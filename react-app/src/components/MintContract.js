@@ -22,7 +22,12 @@ const CreateContract = ({ ipfsClient, factoryContract }) => {
   const [buffer, setBuffer] = useState("");
   const [imageIPFS, setImageIPFS] = useState(null);
 
-  const mintContract = async (contractName, contractSymbol, tokenURI, email) => {
+  const mintContract = async (
+    contractName,
+    contractSymbol,
+    tokenURI,
+    email
+  ) => {
     console.log("Minting contract");
 
     console.log(contractName);
@@ -51,7 +56,6 @@ const CreateContract = ({ ipfsClient, factoryContract }) => {
 
   const handleImageUpload = (options) => {
     const { onSuccess, onError, file, action, onProgress } = options;
-    console.log("file", file);
     try {
       setIsImageLoading(true);
       const reader = new window.FileReader();
@@ -84,7 +88,6 @@ const CreateContract = ({ ipfsClient, factoryContract }) => {
       return true;
     } catch (err) {
       setIsImageLoading(false);
-      console.log("Err", err);
       onError(true);
       return false;
     }
@@ -104,7 +107,12 @@ const CreateContract = ({ ipfsClient, factoryContract }) => {
       if (imageIPFS) {
         const tokenUri = `ipfs://${imageIPFS}`;
         console.log(tokenUri);
-        mintContract(values.contractName, values.contractSymbol, tokenUri, values.email);
+        mintContract(
+          values.contractName,
+          values.contractSymbol,
+          tokenUri,
+          values.email
+        );
       }
     } catch (err) {
       showNotification(err.message, "error");
@@ -183,7 +191,6 @@ const CreateContract = ({ ipfsClient, factoryContract }) => {
               </Form.Item>
             </Form.Item>
             {isImageLoading && <Spin />}
-            {console.log(isImageLoading)}
             {imageIPFS && (
               <Image
                 height={200}

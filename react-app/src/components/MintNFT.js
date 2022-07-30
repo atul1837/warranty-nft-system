@@ -51,48 +51,54 @@ const MintNFT = ({ contractAddress, ipfsClient, nftContract }) => {
           "success",
           `Transaction Hash: ${nftTxn.hash}`
         );
-        sendNftMail(email, contractAddress, parseInt(nftTxn.value._hex, 16), walletAddress, nftTxn.hash);
+        sendNftMail(
+          email,
+          contractAddress,
+          parseInt(nftTxn.value._hex, 16),
+          walletAddress,
+          nftTxn.hash
+        );
       }
     } catch (err) {
       showNotification("NFT Mint Failed", "error", err.message);
     }
   };
 
-  useEffect(() => {
-    console.log(ipfsClient);
-    try {
-      const upload = async () => {
-        if (ipfsClient && buffer) {
-          const result = await ipfsClient.add(buffer);
-
-          if (result && result.path) {
-            console.log(result, result.path);
-            setImageIPFS(result.path);
-          }
-        }
-      };
-
-      upload();
-      setIsImageLoading(false);
-    } catch (err) {
-      setIsImageLoading(false);
-      console.log("err", err);
-    }
-  }, [ipfsClient, buffer]);
-
-  const handleImageUpload = (file) => {
+  const handleImageUpload = (options) => {
+    const { onSuccess, onError, file, action, onProgress } = options;
     try {
       setIsImageLoading(true);
       const reader = new window.FileReader();
       reader.readAsArrayBuffer(file);
       reader.onload = (e) => {
         setBuffer(e.target.result);
-      };
+        let buffer = e.target.result;
+        try {
+          const upload = async () => {
+            console.log("ipfs client ", ipfsClient);
+            if (ipfsClient && buffer) {
+              const result = await ipfsClient.add(buffer);
 
+              if (result && result.path) {
+                console.log(result, result.path);
+                setImageIPFS(result.path);
+              }
+            }
+          };
+
+          upload().then((result) => {
+            setIsImageLoading(false);
+          });
+        } catch (err) {
+          setIsImageLoading(false);
+          console.log("err", err);
+        }
+      };
+      onSuccess(true);
       return true;
     } catch (err) {
       setIsImageLoading(false);
-      console.log("Err", err);
+      onError(true);
       return false;
     }
   };
@@ -188,22 +194,50 @@ const MintNFT = ({ contractAddress, ipfsClient, nftContract }) => {
             </Typography.Title>
           </Form.Item>
 
-          <Form.Item name="email" label="Email" required>
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
             <Input placeholder="Please input customer's email address" />
           </Form.Item>
 
-          <Form.Item name="walletAddress" label="Wallet Address" required>
+          <Form.Item
+            name="walletAddress"
+            label="Wallet Address"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
             <Input placeholder="Please input customer's public wallet address" />
           </Form.Item>
 
-          <Form.Item name="productName" label="Product Name" required>
+          <Form.Item
+            name="productName"
+            label="Product Name"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
             <Input placeholder="Please input product's name" />
           </Form.Item>
 
           <Form.Item
             name="productSerialNumber"
             label="Product Serial No"
-            required
+            rules={[
+              {
+                required: true,
+              },
+            ]}
           >
             <Input placeholder="Please input product's serial number" />
           </Form.Item>
@@ -215,7 +249,15 @@ const MintNFT = ({ contractAddress, ipfsClient, nftContract }) => {
             />
           </Form.Item>
 
-          <Form.Item name="productPrice" label="Product Price" required>
+          <Form.Item
+            name="productPrice"
+            label="Product Price"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
             <Input
               type="number"
               step="0.01"
@@ -231,7 +273,11 @@ const MintNFT = ({ contractAddress, ipfsClient, nftContract }) => {
           <Form.Item
             name="warrantyDuration"
             label="Warranty Duration (in days)"
-            required
+            rules={[
+              {
+                required: true,
+              },
+            ]}
           >
             <Input
               type="number"
@@ -269,10 +315,9 @@ const MintNFT = ({ contractAddress, ipfsClient, nftContract }) => {
               noStyle
             >
               <Upload.Dragger
-                listType="picture"
-                showUploadList={{ showRemoveIcon: true }}
+                showUploadList={false}
                 accept=".png,.jpeg,.jpg,.svg"
-                beforeUpload={handleImageUpload}
+                customRequest={handleImageUpload}
                 name="files"
                 maxCount={1}
               >
