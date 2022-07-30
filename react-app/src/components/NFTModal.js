@@ -19,17 +19,22 @@ const NFTModal = ({
   const [isLoading, setIsLoading] = useState(false);
   const [showTransferForm, setShowTransferForm] = useState(false);
   const [showBurnForm, setShowBurnForm] = useState(false);
+  const [warrantyStatusLoading, setWarrantyStatusLoading] = useState(false);
   const imageIpfsId = nftData?.image.split("//")[1];
   const imageSrc = `https://ipfs.io/ipfs/${imageIpfsId}`;
 
   const checkWarranty = async () => {
-    const nftTxn = await isWarrantyValid(nftContract, parseInt(nftData.token_id._hex, 16));
+    setWarrantyStatusLoading(true);
+    const nftTxn = await isWarrantyValid(
+      nftContract,
+      parseInt(nftData.token_id._hex, 16)
+    );
     console.log(nftTxn);
-    if(nftTxn)
+    if (nftTxn)
       showNotification("Hurray! Your warranty is still valid!", "success");
-    else 
-      showNotification("Oops! Your warranty has expired!", "error");
-  }
+    else showNotification("Oops! Your warranty has expired!", "error");
+    setWarrantyStatusLoading(false);
+  };
 
   let attributes = [];
   if (nftData && nftData.attributes && nftData.attributes.length) {
@@ -47,38 +52,48 @@ const NFTModal = ({
     }));
   }
 
-  if(nftData && nftData.token_id) {
-    attributes = [{
-      trait_type: "Token ID",
-      value: parseInt(nftData.token_id._hex, 16)
-    }, ...attributes];
+  if (nftData && nftData.token_id) {
+    attributes = [
+      {
+        trait_type: "Token ID",
+        value: parseInt(nftData.token_id._hex, 16),
+      },
+      ...attributes,
+    ];
   }
 
-  if(nftData && nftData.attributes && nftData.attributes.length){
+  if (nftData && nftData.attributes && nftData.attributes.length) {
     let buyDate = null;
     let expiryDate = null;
-   
+
     nftData.attributes.forEach((atr) => {
-     if(atr.trait_type === "date_of_purchase"){
-      buyDate = moment(moment.unix(atr.value).format("DD/MM/YYYY"), "DD/MM/YYYY");
-    }})
-  
-    if(buyDate) {
+      if (atr.trait_type === "date_of_purchase") {
+        buyDate = moment(
+          moment.unix(atr.value).format("DD/MM/YYYY"),
+          "DD/MM/YYYY"
+        );
+      }
+    });
+
+    if (buyDate) {
       nftData.attributes.forEach((atr) => {
-        if(atr.trait_type === "warranty_duration") {
-          expiryDate = moment(buyDate.add(atr.value, 'days'));
+        if (atr.trait_type === "warranty_duration") {
+          expiryDate = moment(buyDate.add(atr.value, "days"));
         }
-      })
+      });
     }
- 
-    if(buyDate && expiryDate) {
+
+    if (buyDate && expiryDate) {
       attributes.push({
-        trait_type:  expiryDate.format("YYYY/MM/DD") > moment().format("YYYY/MM/DD") ? 'Expires On': 'Expired On',
-        value: expiryDate.format("DD/MM/YYYY")
-      })      
+        trait_type:
+          expiryDate.format("YYYY/MM/DD") > moment().format("YYYY/MM/DD")
+            ? "Expires On"
+            : "Expired On",
+        value: expiryDate.format("DD/MM/YYYY"),
+      });
     }
   }
-  
+
   const handleBurnNft = () => {
     setIsLoading(true);
     burnNft(nftContract, nftData.token_id)
@@ -147,7 +162,7 @@ const NFTModal = ({
                   key: "value",
                 },
               ]}
-              pagination={false} 
+              pagination={false}
             />
 
             {nftContract && (
@@ -178,11 +193,17 @@ const NFTModal = ({
                     </Button>
                     <Button
                       style={{ marginRight: "1rem" }}
-                      type="danger" onClick={() => setShowBurnForm(true)}>
+                      type="danger"
+                      onClick={() => setShowBurnForm(true)}
+                    >
                       Burn NFT
                     </Button>
-                    <Button type="primary" onClick={checkWarranty}>
-                      Verify Warranty Validity
+                    <Button
+                      type="primary"
+                      onClick={checkWarranty}
+                      loading={warrantyStatusLoading}
+                    >
+                      Verify Validity
                     </Button>
                   </>
                 )}
