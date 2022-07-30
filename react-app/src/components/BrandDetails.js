@@ -42,6 +42,9 @@ const BrandDetails = ({ setBrandContractAddress, brandContract, signer }) => {
         const balance = parseInt(nftTxn?._hex, 16);
         console.log("balance of user inside function", balance);
         setBalanceOfUser(balance);
+        if (balance == 0) {
+          setIsLoading(false);
+        }
       };
       setIsLoading(true);
       getBalanceOfUser();
@@ -64,7 +67,7 @@ const BrandDetails = ({ setBrandContractAddress, brandContract, signer }) => {
         );
 
         let warrantyCard = {
-          token_id: tokenId,
+          token_id: parseInt(tokenId._hex, 16),
           ...getDataFromTokenUriResponse.data,
         };
         console.log("warranty card inside function", warrantyCard);
@@ -76,21 +79,13 @@ const BrandDetails = ({ setBrandContractAddress, brandContract, signer }) => {
       }
     };
 
-    const getTokenIdByIdx = async (idx) => {
-      const tokenId = await brandContract?.tokenOfOwnerByIndex(
-        userAddress,
-        idx
-      );
-      return tokenId;
-    };
-
     console.log("balance of user ", balanceOfUser);
     if (balanceOfUser > 0) {
       for (let idx = 0; idx < balanceOfUser; idx++) {
         fetchWarrantyCard(idx).then((res) => setIsLoading(false));
       }
     }
-  }, [balanceOfUser]);
+  }, [balanceOfUser, brandContract, userAddress]);
 
   if (isLoading) {
     return <Loader />;

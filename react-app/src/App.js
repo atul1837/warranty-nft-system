@@ -41,7 +41,7 @@ const client = createClient({
 
 function App() {
   const [contractAddress, setContractAddress] = useState(null);
-  const [hasContract, setHasContract] = useState(false);
+  const [hasContract, setHasContract] = useState(null);
   const [ipfsClient, setIpfsClient] = useState(null);
   const [factoryContract, setFactoryContract] = useState(null);
   const [nftContract, setNftContract] = useState(null);
@@ -86,7 +86,7 @@ function App() {
       );
       setBrandContract(brandContractInstance);
     }
-  }, [brandContractAddress]);
+  }, [brandContractAddress, signer]);
 
   useEffect(() => {
     const fetchContract = async () => {
@@ -115,7 +115,7 @@ function App() {
 
       setNftContract(nftContractInstance);
     }
-  }, [contractAddress]);
+  }, [contractAddress, signer]);
 
   return (
     <WagmiConfig client={client}>

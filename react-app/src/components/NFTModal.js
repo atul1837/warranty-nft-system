@@ -14,6 +14,7 @@ const NFTModal = ({
   isModalVisible,
   setIsModalVisible,
   nftData,
+  admin,
 }) => {
   const { address } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
@@ -25,10 +26,7 @@ const NFTModal = ({
 
   const checkWarranty = async () => {
     setWarrantyStatusLoading(true);
-    const nftTxn = await isWarrantyValid(
-      nftContract,
-      parseInt(nftData.token_id._hex, 16)
-    );
+    const nftTxn = await isWarrantyValid(nftContract, nftData.token_id);
     console.log(nftTxn);
     if (nftTxn)
       showNotification("Hurray! Your warranty is still valid!", "success");
@@ -56,7 +54,7 @@ const NFTModal = ({
     attributes = [
       {
         trait_type: "Token ID",
-        value: parseInt(nftData.token_id._hex, 16),
+        value: nftData.token_id,
       },
       ...attributes,
     ];
@@ -182,7 +180,7 @@ const NFTModal = ({
                     burnNft={handleBurnNft}
                   />
                 )}
-                {!showBurnForm && !showTransferForm && (
+                {!showBurnForm && !showTransferForm && !admin && (
                   <>
                     <Button
                       type="danger"
@@ -198,15 +196,15 @@ const NFTModal = ({
                     >
                       Burn NFT
                     </Button>
-                    <Button
-                      type="primary"
-                      onClick={checkWarranty}
-                      loading={warrantyStatusLoading}
-                    >
-                      Verify Validity
-                    </Button>
                   </>
                 )}
+                <Button
+                  type="primary"
+                  onClick={checkWarranty}
+                  loading={warrantyStatusLoading}
+                >
+                  Verify Validity
+                </Button>
               </>
             )}
           </List.Item>

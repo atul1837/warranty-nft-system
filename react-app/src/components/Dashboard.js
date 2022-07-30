@@ -6,7 +6,6 @@ import BrandCard from "./BrandCard";
 
 const Dashboard = ({ factoryContract }) => {
   const [contracts, setContracts] = useState([]);
-  const [selectedContract, setSelectedContract] = useState(null);
   const [totalContracts, setTotalContracts] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -62,14 +61,13 @@ const Dashboard = ({ factoryContract }) => {
         brands.push(brandDetails);
       }
       setContracts([...brands]);
+      setIsLoading(false);
     };
 
     if (factoryContract && contracts.length !== totalContracts) {
-      fetchContracts().then((res) => {
-        setIsLoading(false);
-      });
+      fetchContracts();
     }
-  }, [totalContracts]);
+  }, [totalContracts, factoryContract, contracts.length]);
 
   if (isLoading) {
     return <Loader />;

@@ -1,30 +1,10 @@
-import {
-  useAccount,
-  useConnect,
-  useDisconnect,
-  useEnsAvatar,
-  useEnsName,
-} from "wagmi";
+import { useConnect } from "wagmi";
 
 import { Button, Typography, Layout } from "antd";
 
 const WalletProfile = () => {
-  const { address } = useAccount();
-  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
-  const { data: ensName } = useEnsName({ address });
   const { connect, connectors, error, isLoading, pendingConnector } =
     useConnect();
-
-  //   if (isConnected) {
-  //     return (
-  //       <div>
-  //         <img src={ensAvatar} alt="ENS Avatar" />
-  //         <div>{ensName ? `${ensName} (${address})` : address}</div>
-  //         <div>Connected to {connector.name}</div>
-  //         <button onClick={disconnect}>Disconnect</button>
-  //       </div>
-  //     );
-  //   }
 
   return (
     <Layout.Content
