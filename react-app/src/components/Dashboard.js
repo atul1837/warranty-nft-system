@@ -79,7 +79,7 @@ const Dashboard = ({ factoryContract }) => {
       </Typography.Title>
       <Row style={{ margin: "0 1rem" }}>
         {contracts.map((contract) => (
-          <Col key={contract.address} style={{ margin: ".5rem 2rem" }}>
+          <Col span={4} key={contract.address} style={{ margin: ".5rem 2rem" }}>
             <Link
               to={{
                 pathname: `/brand/${contract.address}/`,

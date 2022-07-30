@@ -7,7 +7,7 @@ const BrandCard = ({ brandData }) => {
       style={{ borderRadius: "1rem" }}
       cover={
         <img
-          height={150}
+          height={200}
           style={{ borderTopLeftRadius: "1rem", borderTopRightRadius: "1rem" }}
           alt={brandData?.name}
           src={brandData?.image}
