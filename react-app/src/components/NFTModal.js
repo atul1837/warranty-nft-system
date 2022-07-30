@@ -7,6 +7,7 @@ import TransferNFT from "./TransferNFT";
 import showNotification from "../utilities/notifications";
 import Loader from "./Loader";
 import moment from "moment";
+import { isWarrantyValid } from "../services/contracts/warranty";
 
 const NFTModal = ({
   nftContract,
@@ -20,6 +21,15 @@ const NFTModal = ({
   const [showBurnForm, setShowBurnForm] = useState(false);
   const imageIpfsId = nftData?.image.split("//")[1];
   const imageSrc = `https://ipfs.io/ipfs/${imageIpfsId}`;
+
+  const checkWarranty = async () => {
+    const nftTxn = await isWarrantyValid(nftContract, parseInt(nftData.token_id._hex, 16));
+    console.log(nftTxn);
+    if(nftTxn)
+      showNotification("Hurray! Your warranty is still valid!", "success");
+    else 
+      showNotification("Oops! Your warranty has expired!", "error");
+  }
 
   let attributes = [];
   if (nftData && nftData.attributes && nftData.attributes.length) {
@@ -166,8 +176,13 @@ const NFTModal = ({
                     >
                       Transfer NFT
                     </Button>
-                    <Button type="danger" onClick={() => setShowBurnForm(true)}>
+                    <Button
+                      style={{ marginRight: "1rem" }}
+                      type="danger" onClick={() => setShowBurnForm(true)}>
                       Burn NFT
+                    </Button>
+                    <Button type="primary" onClick={checkWarranty}>
+                      Verify Warranty Validity
                     </Button>
                   </>
                 )}
