@@ -37,6 +37,38 @@ const NFTModal = ({
     }));
   }
 
+  if(nftData && nftData.token_id) {
+    attributes = [{
+      trait_type: "Token ID",
+      value: parseInt(nftData.token_id._hex, 16)
+    }, ...attributes];
+  }
+
+  if(nftData && nftData.attributes && nftData.attributes.length){
+    let buyDate = null;
+    let expiryDate = null;
+   
+    nftData.attributes.forEach((atr) => {
+     if(atr.trait_type === "date_of_purchase"){
+      buyDate = moment(moment.unix(atr.value).format("DD/MM/YYYY"), "DD/MM/YYYY");
+    }})
+  
+    if(buyDate) {
+      nftData.attributes.forEach((atr) => {
+        if(atr.trait_type === "warranty_duration") {
+          expiryDate = moment(buyDate.add(atr.value, 'days'));
+        }
+      })
+    }
+ 
+    if(buyDate && expiryDate) {
+      attributes.push({
+        trait_type:  expiryDate.format("YYYY/MM/DD") > moment().format("YYYY/MM/DD") ? 'Expires On': 'Expired On',
+        value: expiryDate.format("DD/MM/YYYY")
+      })      
+    }
+  }
+  
   const handleBurnNft = () => {
     setIsLoading(true);
     burnNft(nftContract, nftData.token_id)
@@ -91,6 +123,7 @@ const NFTModal = ({
               description={nft?.description}
             />
             <Table
+              style={{ marginBottom: "1rem" }}
               dataSource={attributes}
               columns={[
                 {
@@ -104,6 +137,7 @@ const NFTModal = ({
                   key: "value",
                 },
               ]}
+              pagination={false} 
             />
 
             {nftContract && (
