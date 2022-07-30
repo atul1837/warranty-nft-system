@@ -8,102 +8,178 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract WarrantyCardContract is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Burnable, Ownable {
+contract WarrantyCardContract is
+    ERC721,
+    ERC721Enumerable,
+    ERC721URIStorage,
+    ERC721Burnable,
+    Ownable
+{
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
 
-    constructor(string memory name, string memory symbol, address _owner) ERC721(name, symbol) {
+    constructor(
+        string memory name,
+        string memory symbol,
+        address _owner
+    ) ERC721(name, symbol) {
         transferOwnership(_owner);
     }
 
-    struct WarrantyCard{
-        uint product_serial_no; // product serial no
-        uint issue_date_time; // Data and time stamp when warranty card was first minted (issue data time of warranty card)
-        uint warranty_duration; // warrranty duration in days
-        uint no_transfers_allowed; // no of times warranty can be transfered 0 if warranty transfer is not allowed
+    struct WarrantyCard {
+        uint256 product_serial_no; // product serial no
+        uint256 issue_date_time; // Data and time stamp when warranty card was first minted (issue data time of warranty card)
+        uint256 warranty_duration; // warrranty duration in days
+        uint256 no_transfers_allowed; // no of times warranty can be transfered 0 if warranty transfer is not allowed
     }
-    
-    mapping(uint => WarrantyCard) private _WarrantyCards;
 
-    function _setWarrantyCard(uint _product_serial_no, uint _warranty_duration, uint _no_transfers_allowed, uint256 tokenId) private{
-        WarrantyCard memory warranty_card = WarrantyCard({product_serial_no: _product_serial_no, issue_date_time: block.timestamp, warranty_duration: _warranty_duration, no_transfers_allowed: _no_transfers_allowed});
-        _WarrantyCards[tokenId]=warranty_card;
+    mapping(uint256 => WarrantyCard) private _WarrantyCards;
+
+    function _setWarrantyCard(
+        uint256 _product_serial_no,
+        uint256 _warranty_duration,
+        uint256 _no_transfers_allowed,
+        uint256 tokenId
+    ) private {
+        WarrantyCard memory warranty_card = WarrantyCard({
+            product_serial_no: _product_serial_no,
+            issue_date_time: block.timestamp,
+            warranty_duration: _warranty_duration,
+            no_transfers_allowed: _no_transfers_allowed
+        });
+        _WarrantyCards[tokenId] = warranty_card;
     }
-    
 
-    function mintWarrantyCard(uint _product_serial_no, uint _warranty_duration, uint _no_transfers_allowed, address to, string memory tokenUri) public onlyOwner {
+    function mintWarrantyCard(
+        uint256 _product_serial_no,
+        uint256 _warranty_duration,
+        uint256 _no_transfers_allowed,
+        address to,
+        string memory tokenUri
+    ) public onlyOwner returns (uint256) {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, tokenUri);
-        _setWarrantyCard(_product_serial_no, _warranty_duration, _no_transfers_allowed, tokenId);
+        _setWarrantyCard(
+            _product_serial_no,
+            _warranty_duration,
+            _no_transfers_allowed,
+            tokenId
+        );
+        return tokenId;
     }
 
-
-    function getWarrantyCardDetails(uint256 tokenId) public view returns(WarrantyCard memory) {
+    function getWarrantyCardDetails(uint256 tokenId)
+        public
+        view
+        returns (WarrantyCard memory)
+    {
         address _owner = ERC721.ownerOf(tokenId);
-        require(msg.sender == _owner || msg.sender == owner(), "Sender not owner of token"); // or the person who minted the warranty in first place
+        require(
+            msg.sender == _owner || msg.sender == owner(),
+            "Sender not owner of token"
+        ); // or the person who minted the warranty in first place
         return _WarrantyCards[tokenId];
     }
 
-
-    function getWarrantyCardProductSerialNo(uint256 tokenId) public view returns(uint) {
+    function getWarrantyCardProductSerialNo(uint256 tokenId)
+        public
+        view
+        returns (uint256)
+    {
         address _owner = ERC721.ownerOf(tokenId);
-        require(msg.sender == _owner || msg.sender == owner(), "Sender not owner of token");
+        require(
+            msg.sender == _owner || msg.sender == owner(),
+            "Sender not owner of token"
+        );
         return _WarrantyCards[tokenId].product_serial_no;
     }
 
-
-    function getWarrantyCardIssueDateTime(uint256 tokenId) public view returns(uint) {
+    function getWarrantyCardIssueDateTime(uint256 tokenId)
+        public
+        view
+        returns (uint256)
+    {
         address _owner = ERC721.ownerOf(tokenId);
-        require(msg.sender == _owner || msg.sender == owner(), "Sender not owner of token");
+        require(
+            msg.sender == _owner || msg.sender == owner(),
+            "Sender not owner of token"
+        );
         return _WarrantyCards[tokenId].issue_date_time;
     }
 
-
-    function getWarrantyCardWarrantyDuration(uint256 tokenId) public view returns(uint) {
+    function getWarrantyCardWarrantyDuration(uint256 tokenId)
+        public
+        view
+        returns (uint256)
+    {
         address _owner = ERC721.ownerOf(tokenId);
-        require(msg.sender == _owner || msg.sender == owner(), "Sender not owner of token");
+        require(
+            msg.sender == _owner || msg.sender == owner(),
+            "Sender not owner of token"
+        );
         return _WarrantyCards[tokenId].warranty_duration;
     }
-    
 
-    function getWarrantyCardNoOfTransfersAllowed(uint256 tokenId) public view returns(uint) {
+    function getWarrantyCardNoOfTransfersAllowed(uint256 tokenId)
+        public
+        view
+        returns (uint256)
+    {
         address _owner = ERC721.ownerOf(tokenId);
-        require(msg.sender == _owner || msg.sender == owner(), "Sender not owner of token");
+        require(
+            msg.sender == _owner || msg.sender == owner(),
+            "Sender not owner of token"
+        );
         return _WarrantyCards[tokenId].no_transfers_allowed;
     }
 
-
-    function isWarrantyStillApplicable(uint256 tokenId) public view returns(bool) {
-        uint issue_date_time = _WarrantyCards[tokenId].issue_date_time;
-        uint warranty_duration = _WarrantyCards[tokenId].warranty_duration * 86400; // warranty duration in seconds for comparison with unix timestamp
-        uint current_time = block.timestamp;
-        return (issue_date_time+warranty_duration)>current_time ? true : false;
+    function isWarrantyStillApplicable(uint256 tokenId)
+        public
+        view
+        returns (bool)
+    {
+        uint256 issue_date_time = _WarrantyCards[tokenId].issue_date_time;
+        uint256 warranty_duration = _WarrantyCards[tokenId].warranty_duration *
+            86400; // warranty duration in seconds for comparison with unix timestamp
+        uint256 current_time = block.timestamp;
+        return
+            (issue_date_time + warranty_duration) > current_time ? true : false;
     }
-
 
     // The following functions are overrides required by Solidity.
 
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId)
-        internal
-        override(ERC721, ERC721Enumerable)
-    {
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override(ERC721, ERC721Enumerable) {
         super._beforeTokenTransfer(from, to, tokenId);
-        require(from==address(0) || _WarrantyCards[tokenId].no_transfers_allowed>0, "Transfer not allowed");
+        require(
+            from == address(0) ||
+                _WarrantyCards[tokenId].no_transfers_allowed > 0,
+            "Transfer not allowed"
+        );
     }
 
-    function _afterTokenTransfer(address from, address to, uint256 tokenId)
-        internal
-        override
-    {
+    function _afterTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override {
         super._afterTokenTransfer(from, to, tokenId);
-        if(from != address(0))
-            _WarrantyCards[tokenId].no_transfers_allowed = _WarrantyCards[tokenId].no_transfers_allowed - 1;
+        if (from != address(0))
+            _WarrantyCards[tokenId].no_transfers_allowed =
+                _WarrantyCards[tokenId].no_transfers_allowed -
+                1;
     }
 
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+    function _burn(uint256 tokenId)
+        internal
+        override(ERC721, ERC721URIStorage)
+    {
         super._burn(tokenId);
         delete _WarrantyCards[tokenId];
     }
@@ -125,5 +201,4 @@ contract WarrantyCardContract is ERC721, ERC721Enumerable, ERC721URIStorage, ERC
     {
         return super.supportsInterface(interfaceId);
     }
-
 }

@@ -86,14 +86,26 @@ const FindNFT = ({ nftContract }) => {
             </Button>
           </Form>
         ) : (
-          <div
-            onClick={() => {
-              setIsModalVisible(true);
-              setSelectedNFT(warrantyCard);
-              console.log("selected nft:", selectedNFT);
-            }}
-          >
-            <NFTCard nftData={warrantyCard} />
+          <div>
+            <div
+              onClick={() => {
+                setIsModalVisible(true);
+                setSelectedNFT(warrantyCard);
+                console.log("selected nft:", selectedNFT);
+              }}
+            >
+              <NFTCard nftData={warrantyCard} />
+            </div>
+
+            <Button
+              onClick={() => {
+                setWarrantyCard(null);
+              }}
+              type={"primary"}
+              style={{ width: "100%", marginTop: 20 }}
+            >
+              Search another
+            </Button>
           </div>
         )}
       </Col>
