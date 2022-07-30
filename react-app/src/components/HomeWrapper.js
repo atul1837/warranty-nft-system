@@ -7,7 +7,11 @@ const HomeWrapper = ({ contractAddress, nftContract, factoryContract }) => {
   const { isConnected } = useAccount();
 
   return isConnected ? (
-    <Dashboard nftContract={nftContract} factoryContract={factoryContract} contractAddress={contractAddress} />
+    <Dashboard
+      nftContract={nftContract}
+      factoryContract={factoryContract}
+      contractAddress={contractAddress}
+    />
   ) : (
     <WalletProfile />
   );
