@@ -15,6 +15,7 @@ const BrandDetails = ({ setBrandContractAddress, brandContract, signer }) => {
   const [selectedNFT, setSelectedNFT] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [balanceOfUser, setBalanceOfUser] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (contract != null) {
@@ -42,6 +43,7 @@ const BrandDetails = ({ setBrandContractAddress, brandContract, signer }) => {
         console.log("balance of user inside function", balance);
         setBalanceOfUser(balance);
       };
+      setIsLoading(true);
       getBalanceOfUser();
     }
   }, [brandContract, userAddress]);
@@ -85,10 +87,14 @@ const BrandDetails = ({ setBrandContractAddress, brandContract, signer }) => {
     console.log("balance of user ", balanceOfUser);
     if (balanceOfUser > 0) {
       for (let idx = 0; idx < balanceOfUser; idx++) {
-        fetchWarrantyCard(idx);
+        fetchWarrantyCard(idx).then((res) => setIsLoading(false));
       }
     }
   }, [balanceOfUser]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <Layout.Content>
