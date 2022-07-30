@@ -112,7 +112,7 @@ const CreateContract = ({ ipfsClient, factoryContract }) => {
           values.contractSymbol,
           tokenUri,
           values.email
-        );
+        ).then((res) => window.location.reload());
       }
     } catch (err) {
       showNotification(err.message, "error");
@@ -155,15 +155,39 @@ const CreateContract = ({ ipfsClient, factoryContract }) => {
               </Typography.Title>
             </Form.Item>
 
-            <Form.Item name="email" label="Brand Email" required>
+            <Form.Item
+              name="email"
+              label="Brand Email"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
               <Input placeholder="Please input brand email address" />
             </Form.Item>
 
-            <Form.Item name="contractName" label="Brand Name" required>
+            <Form.Item
+              name="contractName"
+              label="Brand Name"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
               <Input placeholder="Please input brand name" />
             </Form.Item>
 
-            <Form.Item name="contractSymbol" label="Brand Symbol" required>
+            <Form.Item
+              name="contractSymbol"
+              label="Brand Symbol"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
               <Input placeholder="Please input brand symbol/logo" />
             </Form.Item>
 
