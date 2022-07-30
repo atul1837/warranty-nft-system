@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Layout, Typography, Row, Col } from "antd";
 import { Link } from "react-router-dom";
-
+import Loader from "./Loader";
 import BrandCard from "./BrandCard";
 
 const Dashboard = ({ factoryContract }) => {
   const [contracts, setContracts] = useState([]);
   const [selectedContract, setSelectedContract] = useState(null);
   const [totalContracts, setTotalContracts] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getTokenCount = async () => {
@@ -17,7 +18,10 @@ const Dashboard = ({ factoryContract }) => {
       setTotalContracts(totalSupply);
     };
 
-    if (factoryContract) getTokenCount();
+    if (factoryContract) {
+      setIsLoading(true);
+      getTokenCount();
+    }
   }, [factoryContract]);
 
   useEffect(() => {
@@ -61,9 +65,15 @@ const Dashboard = ({ factoryContract }) => {
     };
 
     if (factoryContract && contracts.length !== totalContracts) {
-      fetchContracts();
+      fetchContracts().then((res) => {
+        setIsLoading(false);
+      });
     }
   }, [totalContracts]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <Layout.Content>
@@ -75,7 +85,7 @@ const Dashboard = ({ factoryContract }) => {
           fontWeight: "900",
         }}
       >
-        Brands
+        All Brands
       </Typography.Title>
       <Row style={{ margin: "0 1rem" }}>
         {contracts.map((contract) => (
