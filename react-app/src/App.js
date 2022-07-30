@@ -15,7 +15,6 @@ import { create } from "ipfs-http-client";
 import { ethers } from "ethers";
 
 import AppHeader from "./components/AppHeader";
-import AppFooter from "./components/AppFooter";
 import HomeWrapper from "./components/HomeWrapper";
 import BrandDetails from "./components/BrandDetails";
 
@@ -148,7 +147,6 @@ function App() {
               />
             </Route>
           </Switch>
-          <AppFooter />
         </Layout>
       </BrowserRouter>
     </WagmiConfig>
