@@ -19,7 +19,7 @@ const Brands = ({ hasContract, factoryContract, nftContract, ipfsClient }) => {
           items={[
             { key: "1", label: "Mint NFT" },
             { key: "2", label: "View Minted Warranty" },
-            { key: "3", label: "Find Warranty Card" }
+            { key: "3", label: "Find Warranty Card" },
           ]}
         />
       </Layout.Sider>

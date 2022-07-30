@@ -5,6 +5,7 @@ import { Layout, Typography, Row, Col } from "antd";
 import NFTCard from "./NFTCard";
 import NFTModal from "./NFTModal";
 import { getTokenUri } from "../services/contracts/warranty";
+import Loader from "./Loader";
 
 const BrandDetails = ({ setBrandContractAddress, brandContract, signer }) => {
   const location = useLocation();
@@ -110,8 +111,8 @@ const BrandDetails = ({ setBrandContractAddress, brandContract, signer }) => {
         {`${
           location.state.contract && location.state.contract.name
             ? location.state.contract.name
-            : "Warranty Card"
-        } NFTs`}
+            : "Warranty Cards"
+        } Warranty Cards`}
       </Typography.Title>
       <Row style={{ margin: "0 1rem" }}>
         {console.log("warranty cards", warrantyCards)}
