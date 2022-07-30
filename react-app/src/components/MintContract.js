@@ -22,7 +22,7 @@ const CreateContract = ({ ipfsClient, factoryContract }) => {
   const [buffer, setBuffer] = useState("");
   const [imageIPFS, setImageIPFS] = useState(null);
 
-  const mintContract = async (contractName, contractSymbol, tokenURI) => {
+  const mintContract = async (contractName, contractSymbol, tokenURI, email) => {
     console.log("Minting contract");
 
     console.log(contractName);
@@ -43,33 +43,11 @@ const CreateContract = ({ ipfsClient, factoryContract }) => {
         "success",
         `Contract Trasnaction Hash: ${contractTxn.hash}`
       );
-      sendContractMail("vaibhav.jindal.2001@gmail.com", contractTxn.hash);
+      sendContractMail(email, contractTxn.hash);
       setImageIPFS(null);
       setIsLoading(false);
     }
   };
-
-  // useEffect(() => {
-  //   console.log(ipfsClient);
-  //   try {
-  //     const upload = async () => {
-  //       if (ipfsClient && buffer) {
-  //         const result = await ipfsClient.add(buffer);
-
-  //         if (result && result.path) {
-  //           console.log(result, result.path);
-  //           setImageIPFS(result.path);
-  //         }
-  //       }
-  //     };
-
-  //     upload();
-  //     setIsImageLoading(false);
-  //   } catch (err) {
-  //     setIsImageLoading(false);
-  //     console.log("err", err);
-  //   }
-  // }, [ipfsClient, buffer]);
 
   const handleImageUpload = (options) => {
     const { onSuccess, onError, file, action, onProgress } = options;
@@ -126,7 +104,7 @@ const CreateContract = ({ ipfsClient, factoryContract }) => {
       if (imageIPFS) {
         const tokenUri = `ipfs://${imageIPFS}`;
         console.log(tokenUri);
-        mintContract(values.contractName, values.contractSymbol, tokenUri);
+        mintContract(values.contractName, values.contractSymbol, tokenUri, values.email);
       }
     } catch (err) {
       showNotification(err.message, "error");
@@ -167,6 +145,10 @@ const CreateContract = ({ ipfsClient, factoryContract }) => {
               >
                 Contract Details
               </Typography.Title>
+            </Form.Item>
+
+            <Form.Item name="email" label="Brand Email" required>
+              <Input placeholder="Please input brand email address" />
             </Form.Item>
 
             <Form.Item name="contractName" label="Brand Name" required>

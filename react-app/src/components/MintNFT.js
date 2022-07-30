@@ -20,7 +20,7 @@ import Loader from "./Loader";
 import showNotification from "../utilities/notifications";
 import { sendNftMail } from "../services/mailer/nftMail";
 
-const MintNFT = ({ ipfsClient, nftContract }) => {
+const MintNFT = ({ contractAddress, ipfsClient, nftContract }) => {
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [buffer, setBuffer] = useState("");
   const [imageIPFS, setImageIPFS] = useState("");
@@ -32,7 +32,8 @@ const MintNFT = ({ ipfsClient, nftContract }) => {
     warrantyDuration,
     warrantyTransfers,
     walletAddress,
-    tokenUri
+    tokenUri,
+    email
   ) => {
     try {
       const nftTxn = await nftContract.mintWarrantyCard(
@@ -44,14 +45,13 @@ const MintNFT = ({ ipfsClient, nftContract }) => {
       );
 
       await nftTxn.wait();
-
-      if (nftTxn.hash) {
+      if (nftTxn.hash && nftTxn.value) {
         showNotification(
           "NFT Minted Successfully",
           "success",
           `Transaction Hash: ${nftTxn.hash}`
         );
-        sendNftMail("vaibhav.jindal.2001@gmail.com", walletAddress, nftTxn.hash);
+        sendNftMail(email, contractAddress, parseInt(nftTxn.value._hex, 16), walletAddress, nftTxn.hash);
       }
     } catch (err) {
       showNotification("NFT Mint Failed", "error", err.message);
@@ -111,6 +111,10 @@ const MintNFT = ({ ipfsClient, nftContract }) => {
     const warrantyJSON = {
       attributes: [
         {
+          trait_type: "email",
+          value: values.email,
+        },
+        {
           trait_type: "warranty_duration",
           value: values.warrantyDuration,
         },
@@ -142,7 +146,8 @@ const MintNFT = ({ ipfsClient, nftContract }) => {
         values.warrantyDuration,
         values.warrantyTransfers || 0,
         values.walletAddress,
-        tokenUri
+        tokenUri,
+        values.email
       );
     }
 
@@ -181,6 +186,10 @@ const MintNFT = ({ ipfsClient, nftContract }) => {
             >
               Warranty Card Details
             </Typography.Title>
+          </Form.Item>
+
+          <Form.Item name="email" label="Email" required>
+            <Input placeholder="Please input customer's email address" />
           </Form.Item>
 
           <Form.Item name="walletAddress" label="Wallet Address" required>

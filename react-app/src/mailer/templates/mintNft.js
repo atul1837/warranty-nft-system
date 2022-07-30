@@ -1,5 +1,5 @@
 export const mintNftEmail = ({ walletAddress, hash }) => ({
-    subject: `NFT Warranty Minted Succesfully!`,
+    subject: `NFT Warranty Minted Successfully!`,
     body: (
         <body>
         <p>Hi,</p>
