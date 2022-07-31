@@ -3,8 +3,13 @@ export const getTokenUri = async (contract, tokenId) => {
   return nftTxn;
 };
 
+export const getOwnerAddress = async (contract, tokenId) => {
+  const nftTxn = await contract.ownerOf(tokenId);
+  return nftTxn;
+};
+
 export const burnNft = async (contract, tokenId) => {
-  const nftTxn = await contract.burn(parseInt(tokenId._hex, 16), {
+  const nftTxn = await contract.burn(tokenId, {
     gasLimit: 5000000,
   });
 
@@ -45,4 +50,4 @@ export const isWarrantyValid = async (contract, tokenId) => {
   const nftTxn = await contract.isWarrantyStillApplicable(tokenId);
 
   return nftTxn;
-} 
+};

@@ -99,6 +99,7 @@ const NFTModal = ({
       .then((res) => {
         console.log(res);
         showNotification("NFT Burnt Successfully!", "success");
+        window.location.reload();
         setIsLoading(false);
       })
       .catch((err) => {
@@ -135,7 +136,36 @@ const NFTModal = ({
         renderItem={(nft) => (
           <List.Item
             key={nft}
-            extra={<Image height={400} alt={nft?.name} src={imageSrc} />}
+            extra={
+              <>
+                <Image height={400} alt={nft?.name} src={imageSrc} />
+                <div style={{ marginTop: 10, fontWeight: 600 }}>
+                  <Table
+                    style={{ marginBottom: "1rem" }}
+                    dataSource={[
+                      {
+                        trait_type: "Owner's Address",
+                        value: nftData.ownerAddress,
+                      },
+                    ]}
+                    showHeader={false}
+                    columns={[
+                      {
+                        title: "Trait Type",
+                        dataIndex: "trait_type",
+                        key: "trait_type",
+                      },
+                      {
+                        title: "Value",
+                        dataIndex: "value",
+                        key: "value",
+                      },
+                    ]}
+                    pagination={false}
+                  />
+                </div>
+              </>
+            }
           >
             <List.Item.Meta
               title={
@@ -168,7 +198,7 @@ const NFTModal = ({
                 {showTransferForm && (
                   <TransferNFT
                     setIsLoading={setIsLoading}
-                    tokenIdHex={nftData.token_id}
+                    tokenId={nftData.token_id}
                     walletAddress={address}
                     nftContract={nftContract}
                     setShowTransferForm={setShowTransferForm}

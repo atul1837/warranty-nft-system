@@ -5,14 +5,11 @@ import showNotification from "../utilities/notifications";
 
 const TransferNFT = ({
   setIsLoading,
-  tokenIdHex,
+  tokenId,
   walletAddress,
   nftContract,
   setShowTransferForm,
 }) => {
-  let tokenId = null;
-  console.log(tokenIdHex, parseInt(tokenIdHex._hex, 16));
-  if (tokenIdHex) tokenId = parseInt(tokenIdHex._hex, 16);
   const [toWalletAddress, setToWalletAddress] = useState("");
 
   const handleTransferNft = () => {
@@ -22,10 +19,15 @@ const TransferNFT = ({
       .then((res) => {
         console.log(res);
         showNotification("NFT Transferred Successfully!", "success");
+        window.location.reload();
         setIsLoading(false);
       })
       .catch((err) => {
-        showNotification("NFT Transfer Failed!", "error", err);
+        showNotification(
+          "Warranty Transfer Failed!",
+          "error",
+          "Warranty is not transfarable"
+        );
         console.log(err);
         setIsLoading(false);
       });
