@@ -91,10 +91,11 @@ function App() {
   useEffect(() => {
     const fetchContract = async () => {
       const contractTxn = await factoryContract.getcontractofowner();
-
       if (contractTxn !== process.env.REACT_APP_NULL_CONTRACT) {
         setContractAddress(contractTxn);
         setHasContract(true);
+      } else {
+        setHasContract(false);
       }
     };
     if (factoryContract) {
