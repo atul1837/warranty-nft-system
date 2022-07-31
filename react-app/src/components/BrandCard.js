@@ -4,7 +4,7 @@ const BrandCard = ({ brandData }) => {
   return (
     <Card
       hoverable
-      style={{ borderRadius: "1rem" }}
+      style={{ borderRadius: "1rem", padding: 25 }}
       cover={
         <img
           height={200}
