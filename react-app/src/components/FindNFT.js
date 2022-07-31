@@ -24,7 +24,7 @@ const FindNFT = ({ nftContract }) => {
 
       setWarrantyCard({
         token_id: values.tokenId,
-        ownerAddress: values.ownerAddress,
+        ownerAddress: ownerAddress,
         ...getDataFromTokenUriResponse.data,
       });
       setLoading(false);
