@@ -197,7 +197,7 @@ const NFTModal = ({
                 {showTransferForm && (
                   <TransferNFT
                     setIsLoading={setIsLoading}
-                    tokenIdHex={nftData.token_id}
+                    tokenId={nftData.token_id}
                     walletAddress={address}
                     nftContract={nftContract}
                     setShowTransferForm={setShowTransferForm}
