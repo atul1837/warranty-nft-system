@@ -9,7 +9,7 @@ export const getOwnerAddress = async (contract, tokenId) => {
 };
 
 export const burnNft = async (contract, tokenId) => {
-  const nftTxn = await contract.burn(parseInt(tokenId._hex, 16), {
+  const nftTxn = await contract.burn(tokenId, {
     gasLimit: 5000000,
   });
 

@@ -99,6 +99,7 @@ const NFTModal = ({
       .then((res) => {
         console.log(res);
         showNotification("NFT Burnt Successfully!", "success");
+        window.location.reload();
         setIsLoading(false);
       })
       .catch((err) => {
