@@ -4,7 +4,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { Layout, Typography, Row, Col } from "antd";
 import NFTCard from "./NFTCard";
 import NFTModal from "./NFTModal";
-import { getTokenUri } from "../services/contracts/warranty";
+import { getTokenUri, getOwnerAddress } from "../services/contracts/warranty";
 import Loader from "./Loader";
 
 const BrandDetails = ({ setBrandContractAddress, brandContract, signer }) => {
@@ -61,13 +61,14 @@ const BrandDetails = ({ setBrandContractAddress, brandContract, signer }) => {
       );
       try {
         const tokenURI = await getTokenUri(brandContract, tokenId);
-
+        const ownerAddress = await getOwnerAddress(brandContract, tokenId);
         const getDataFromTokenUriResponse = await axios.get(
           `https://ipfs.io/ipfs/${tokenURI.split("//")[1]}`
         );
 
         let warrantyCard = {
           token_id: parseInt(tokenId._hex, 16),
+          ownerAddress: ownerAddress,
           ...getDataFromTokenUriResponse.data,
         };
         console.log("warranty card inside function", warrantyCard);

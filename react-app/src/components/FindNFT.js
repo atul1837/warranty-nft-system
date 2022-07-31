@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Input, Button, Col, Form, Row, Typography } from "antd";
 import { useState } from "react";
-import { getTokenUri } from "../services/contracts/warranty";
+import { getOwnerAddress, getTokenUri } from "../services/contracts/warranty";
 import NFTCard from "./NFTCard";
 import NFTModal from "./NFTModal";
 import showNotification from "../utilities/notifications";
@@ -17,13 +17,14 @@ const FindNFT = ({ nftContract }) => {
     try {
       const tokenURI = await getTokenUri(nftContract, values.tokenId);
       console.log(tokenURI);
-
+      const ownerAddress = await getOwnerAddress(nftContract, values.tokenId);
       const getDataFromTokenUriResponse = await axios.get(
         `https://ipfs.io/ipfs/${tokenURI.split("//")[1]}`
       );
 
       setWarrantyCard({
         token_id: values.tokenId,
+        ownerAddress: values.ownerAddress,
         ...getDataFromTokenUriResponse.data,
       });
       setLoading(false);

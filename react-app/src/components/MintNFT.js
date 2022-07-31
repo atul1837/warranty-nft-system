@@ -115,10 +115,6 @@ const MintNFT = ({ contractAddress, ipfsClient, nftContract }) => {
     const warrantyJSON = {
       attributes: [
         {
-          trait_type: "email",
-          value: values.email,
-        },
-        {
           trait_type: "warranty_duration",
           value: values.warrantyDuration,
         },

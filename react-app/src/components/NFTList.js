@@ -5,6 +5,7 @@ import { Layout, Typography, Row, Col } from "antd";
 import NFTCard from "./NFTCard";
 import NFTModal from "./NFTModal";
 import {
+  getOwnerAddress,
   getTokenIds,
   getTokenUri,
   getTotalSupply,
@@ -39,12 +40,17 @@ const NFTList = ({ nftContract }) => {
         try {
           const tokenURI = await getTokenUri(nftContract, tokenId);
           console.log(tokenURI);
+          const ownerAddress = await getOwnerAddress(nftContract, tokenId);
 
           const getDataFromTokenUriResponse = await axios.get(
             `https://ipfs.io/ipfs/${tokenURI.split("//")[1]}`
           );
 
-          nfts.push({ token_id: tokenId, ...getDataFromTokenUriResponse.data });
+          nfts.push({
+            token_id: tokenId,
+            ownerAddress: ownerAddress,
+            ...getDataFromTokenUriResponse.data,
+          });
         } catch (err) {
           console.log("err", err);
         }
